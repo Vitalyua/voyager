@@ -1,0 +1,105 @@
+<!-- ── page header ── -->
+<section class="vg-pagehd">
+    <h1>ULD Monitoring</h1>
+    <span class="muted t13 hd-counts">
+        {{ items().length }} active ·
+        <span class="text-crit">{{ redCount }} red</span> ·
+        <span class="text-warn">{{ yellowCount }} yellow</span>
+    </span>
+    <span class="grow"></span>
+    <button class="vg-btn">Export forecast</button>
+    <button class="vg-btn primary" routerLink="/uld/new">+ Create ULD</button>
+</section>
+
+<!-- ── filter bar ── -->
+<div class="filter-bar">
+    <div class="row filter-group">
+        <span class="faint t11 upper filter-lbl">Status</span>
+        @for (x of statusFilters; track x) {
+            <span class="vg-chip" [class.active]="status() === x" (click)="status.set(x)">{{ x }}</span>
+        }
+    </div>
+    <div class="filter-divider"></div>
+    <div class="row filter-group">
+        <span class="faint t11 upper filter-lbl">Cargo</span>
+        @for (x of cargoFilters; track x) {
+            <span class="vg-chip" [class.active]="ctype() === x" (click)="ctype.set(x)">{{ x }}</span>
+        }
+    </div>
+</div>
+
+<!-- ── body ── -->
+<div class="uld-body">
+    <!-- globe (placeholder until D3 globe is wired) -->
+    <div class="vg-placeholder globe">
+        <div class="globe-title">Globe · ULD movements — live</div>
+        <div class="globe-sub muted">orthographic projection · drag to rotate · auto-rotates when idle</div>
+    </div>
+
+    <!-- ── grid ── -->
+    <div class="uld-grid">
+        @for (u of items(); track u.id) {
+            @let c = corridor(u.range, u.current);
+            <div class="vg-card uld-card"
+                 [class.crit]="u.status === 'crit'"
+                 [class.warn]="u.status === 'warn'"
+                 [class.ok]="u.status === 'ok'">
+
+                <div class="hdr">
+                    <span class="uld">{{ u.id }}</span>
+                    <span class="spacer"></span>
+                    <span class="vg-badge"
+                          [class.crit]="u.status === 'crit'"
+                          [class.warn]="u.status === 'warn'"
+                          [class.ok]="u.status === 'ok'">{{ statusLabel(u.status) }}</span>
+                </div>
+
+                <div class="route">
+                    <div class="vg-route">
+                        @for (apt of u.route; track $index; let last = $last) {
+                            <span class="apt">{{ apt }}</span>
+                            @if (!last) {
+                                <span class="leg"></span>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="row uld-meta">
+                    <span class="cargo-pill">
+                        <span class="vg-ctdot" [class]="u.cargo"></span>{{ cargoLabel(u.cargo) }}
+                    </span>
+                    <span class="mono muted uld-temp">
+                        {{ u.range[0] }}°–{{ u.range[1] }}°C ·
+                        <span class="text-pri">{{ u.current.toFixed(1) }}°C</span>
+                    </span>
+                </div>
+
+                <div class="corridor">
+                    <div class="corridor-track"></div>
+                    <div class="corridor-band"
+                         [style.left.%]="c.bandLeft"
+                         [style.width.%]="c.bandWidth"></div>
+                    <div class="corridor-needle"
+                         [class.over]="c.over"
+                         [style.left.%]="c.needleLeft"></div>
+                </div>
+
+                <div class="sparkline">
+                    <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+                        <polyline [attr.points]="sparkPoints(u.spark)"
+                                  fill="none" stroke-width="1.4"
+                                  vector-effect="non-scaling-stroke"/>
+                    </svg>
+                </div>
+
+                <div class="foot">
+                    <span class="mono uld-next">{{ u.next }}</span>
+                    <span class="muted uld-open">Open ›</span>
+                </div>
+
+                <div class="forecast muted">{{ u.forecast }}</div>
+            </div>
+        }
+    </div>
+</div>

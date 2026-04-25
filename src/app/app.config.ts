@@ -1,6 +1,7 @@
-import {ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners} from '@angular/core';
+import {ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners, signal} from '@angular/core';
 import {provideRouter} from '@angular/router';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import {AWR_CONFIG} from '@awerysoftware/awr';
 
 import {routes} from './app.routes';
 import {AppErrorHandler} from './app.error-handler';
@@ -13,5 +14,19 @@ export const appConfig: ApplicationConfig = {
         provideBrowserGlobalErrorListeners(),
         provideRouter(routes),
         provideHttpClient(withInterceptors([apiBaseUrlInterceptor, errorInterceptor])),
-    ]
+        {
+            provide: AWR_CONFIG,
+            useValue: {
+                translates: {
+                    language: signal('en'),
+                    key: signal(null),
+                    list: signal({}),
+                },
+                dates: {
+                    format: signal('dd/MMM/yyyy'),
+                    firstDayOfWeek: signal(1),
+                },
+            },
+        },
+    ],
 };

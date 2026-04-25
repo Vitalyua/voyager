@@ -28,10 +28,25 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@awerysoftware/awr/assets/images",
+                "output": "images"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@awerysoftware/awr-fontawesome/assets/fontawesome-pro/webfonts",
+                "output": "webfonts"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/@awerysoftware/awr/assets/awr.global.css",
+              "node_modules/@awerysoftware/awr/assets/awr.flags.css",
+              "node_modules/@awerysoftware/awr-fontawesome/assets/fontawesome-pro/css/fontawesome.css",
+              "node_modules/@awerysoftware/awr-fontawesome/assets/fontawesome-pro/css/regular.css",
+              "node_modules/@awerysoftware/awr-fontawesome/assets/fontawesome-pro/css/solid.css"
             ]
           },
           "configurations": {

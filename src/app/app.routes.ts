@@ -37,7 +37,11 @@ export const routes: Routes = [
             },
             {
                 path: 'uld',
-                component: ComingSoonComponent,
+                loadComponent: () => import('./pages/uld/uld-list.component').then(m => m.UldListComponent),
+            },
+            {
+                path: 'uld/new',
+                loadComponent: () => import('./pages/uld/new/uld-new.component').then(m => m.UldNewComponent),
             },
             {
                 path: 'claims',
