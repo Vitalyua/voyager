@@ -10,9 +10,9 @@ export interface ScanAwbParty {
 export interface ScanAwbInfo {
     awb: string;
     route: string[];
-    cargo: string;
+    cargo: string | null;
     pcs: number;
-    kg: number;
+    kg: string | number;
     fohConfirmedAt: string | null;
     parties: ScanAwbParty[];
 }

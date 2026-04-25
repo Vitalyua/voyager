@@ -28,37 +28,30 @@
             <div class="scan-body">
                 <div class="awb-card">
                     <div class="awb-route">
-                        <div class="route-stop">
-                            <span class="mono code">HKG</span>
-                            <span class="city">Hong Kong</span>
-                        </div>
-                        <div class="route-leg">
-                            <span class="route-line"></span>
-                            <span class="route-arrow">›</span>
-                        </div>
-                        <div class="route-stop">
-                            <span class="mono code">FRA</span>
-                            <span class="city">Frankfurt</span>
-                        </div>
-                        <div class="route-leg">
-                            <span class="route-line"></span>
-                            <span class="route-arrow">›</span>
-                        </div>
-                        <div class="route-stop">
-                            <span class="mono code">JFK</span>
-                            <span class="city">New York</span>
-                        </div>
+                        @for (apt of awbInfo()?.route ?? []; track $index; let last = $last) {
+                            <div class="route-stop">
+                                <span class="mono code">{{ apt }}</span>
+                            </div>
+                            @if (!last) {
+                                <div class="route-leg">
+                                    <span class="route-line"></span>
+                                    <span class="route-arrow">›</span>
+                                </div>
+                            }
+                        }
                     </div>
                     <hr class="awb-div"/>
                     <div class="awb-meta">
-                        <span class="cargo-pill">
-                            <span class="cargo-dot pharma"></span>
-                            <span class="cargo-name">Pharma</span>
-                        </span>
+                        @if (awbInfo()?.cargo; as cargo) {
+                            <span class="cargo-pill">
+                                <span class="cargo-dot" [class]="cargo"></span>
+                                <span class="cargo-name">{{ cargo }}</span>
+                            </span>
+                            <span class="dot-sep">·</span>
+                        }
+                        <span class="meta-mut">{{ awbInfo()?.pcs ?? 0 }} pcs</span>
                         <span class="dot-sep">·</span>
-                        <span class="meta-mut">12 pcs</span>
-                        <span class="dot-sep">·</span>
-                        <span class="meta-mut">320 kg</span>
+                        <span class="meta-mut">{{ awbInfo()?.kg ?? 0 }} kg</span>
                     </div>
                     <div class="awb-status">
                         @if (fohConfirmedAt()) {
@@ -88,37 +81,30 @@
             <div class="scan-body">
                 <div class="awb-card">
                     <div class="awb-route">
-                        <div class="route-stop">
-                            <span class="mono code">HKG</span>
-                            <span class="city">Hong Kong</span>
-                        </div>
-                        <div class="route-leg">
-                            <span class="route-line"></span>
-                            <span class="route-arrow">›</span>
-                        </div>
-                        <div class="route-stop">
-                            <span class="mono code">FRA</span>
-                            <span class="city">Frankfurt</span>
-                        </div>
-                        <div class="route-leg">
-                            <span class="route-line"></span>
-                            <span class="route-arrow">›</span>
-                        </div>
-                        <div class="route-stop">
-                            <span class="mono code">JFK</span>
-                            <span class="city">New York</span>
-                        </div>
+                        @for (apt of awbInfo()?.route ?? []; track $index; let last = $last) {
+                            <div class="route-stop">
+                                <span class="mono code">{{ apt }}</span>
+                            </div>
+                            @if (!last) {
+                                <div class="route-leg">
+                                    <span class="route-line"></span>
+                                    <span class="route-arrow">›</span>
+                                </div>
+                            }
+                        }
                     </div>
                     <hr class="awb-div"/>
                     <div class="awb-meta">
-                        <span class="cargo-pill">
-                            <span class="cargo-dot pharma"></span>
-                            <span class="cargo-name">Pharma</span>
-                        </span>
+                        @if (awbInfo()?.cargo; as cargo) {
+                            <span class="cargo-pill">
+                                <span class="cargo-dot" [class]="cargo"></span>
+                                <span class="cargo-name">{{ cargo }}</span>
+                            </span>
+                            <span class="dot-sep">·</span>
+                        }
+                        <span class="meta-mut">{{ awbInfo()?.pcs ?? 0 }} pcs</span>
                         <span class="dot-sep">·</span>
-                        <span class="meta-mut">12 pcs</span>
-                        <span class="dot-sep">·</span>
-                        <span class="meta-mut">320 kg</span>
+                        <span class="meta-mut">{{ awbInfo()?.kg ?? 0 }} kg</span>
                     </div>
                     <div class="awb-status">
                         <span class="badge ok">FOH confirmed</span>
@@ -268,10 +254,10 @@
 
                         @if (notify()) {
                             <div class="notify-list">
-                                @for (p of parties; track p.name; let i = $index) {
+                                @for (p of parties(); track $index; let i = $index) {
                                     <div class="contact-row">
                                         <awr-checkbox
-                                                [ngModel]="contacts()[i].on"
+                                                [ngModel]="contacts()[i]?.on ?? false"
                                                 [ngModelOptions]="{standalone: true}"
                                                 (ngModelChange)="setContactOn(i, $event)">
                                         </awr-checkbox>
@@ -279,14 +265,19 @@
                                             <div class="contact-name">{{ p.name }}</div>
                                             <div class="contact-role">{{ p.role }}</div>
                                         </div>
-                                        @if (contacts()[i].on) {
+                                        @if (contacts()[i]?.on) {
                                             <awr-toggle-group
                                                     [options]="channels"
-                                                    [ngModel]="contacts()[i].ch"
+                                                    [ngModel]="contacts()[i]?.ch ?? 'Email'"
                                                     [ngModelOptions]="{standalone: true}"
                                                     (ngModelChange)="setContactChannel(i, $event)">
                                             </awr-toggle-group>
                                         }
+                                    </div>
+                                }
+                                @if (parties().length === 0) {
+                                    <div class="contact-row">
+                                        <span class="muted">No notified parties available for this AWB.</span>
                                     </div>
                                 }
                             </div>

@@ -72,6 +72,9 @@ export class ScanComponent {
                     if (info?.fohConfirmedAt) {
                         this.fohConfirmedAt.set(info.fohConfirmedAt);
                     }
+                    this.contacts.set(
+                        (info?.parties ?? []).map(() => ({on: true, ch: 'Email' as const})),
+                    );
                 });
         });
     }
@@ -88,18 +91,8 @@ export class ScanComponent {
 
     public readonly notify = signal<boolean>(true);
 
-    public readonly parties: Party[] = [
-        {name: 'Acme Logistics', role: 'Freight forwarder'},
-        {name: 'John Doe', role: 'Driver · HKG GH'},
-        {name: 'Lufthansa Cargo', role: 'Airline'},
-        {name: 'FreshGoods Pharma', role: 'Shipper'},
-    ];
-    public readonly contacts = signal<Contact[]>([
-        {on: true, ch: 'Email'},
-        {on: true, ch: 'WhatsApp'},
-        {on: true, ch: 'Email'},
-        {on: false, ch: 'Email'},
-    ]);
+    public readonly parties = computed<Party[]>(() => this.awbInfo()?.parties ?? []);
+    public readonly contacts = signal<Contact[]>([]);
 
     public readonly canSendFailure = computed(() =>
         this.reasons().some(r => r.l1 && r.l2 && r.l3),
@@ -173,6 +166,8 @@ export class ScanComponent {
 
     public sendFailure(): void {
         if (!this.canSendFailure()) return;
+        const parties = this.parties();
+        const contacts = this.contacts();
         const payload = {
             awb: this.awb(),
             reasons: this.reasons()
@@ -183,8 +178,8 @@ export class ScanComponent {
                 })),
             notify: this.notify(),
             contacts: this.notify()
-                ? this.parties
-                    .map((p, i) => ({...p, on: this.contacts()[i].on, ch: this.contacts()[i].ch}))
+                ? parties
+                    .map((p, i) => ({...p, on: contacts[i]?.on ?? false, ch: contacts[i]?.ch ?? 'Email' as Channel}))
                     .filter(c => c.on)
                     .map(({name, role, ch}) => ({name, role, channel: ch}))
                 : [],

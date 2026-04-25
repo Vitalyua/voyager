@@ -5,13 +5,14 @@ import {Routes} from '@angular/router';
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-      <div style="padding:48px 28px; text-align:center;">
-        <h1 style="font-size:22px; font-weight:700; letter-spacing:-0.3px; margin-bottom:6px;">Coming soon</h1>
-        <p style="font-size:13px; color: var(--text-mut);">This page is not implemented yet.</p>
-      </div>
+        <div style="padding:48px 28px; text-align:center;">
+            <h1 style="font-size:22px; font-weight:700; letter-spacing:-0.3px; margin-bottom:6px;">Coming soon</h1>
+            <p style="font-size:13px; color: var(--text-mut);">This page is not implemented yet.</p>
+        </div>
     `,
 })
-class ComingSoonComponent {}
+class ComingSoonComponent {
+}
 
 export const routes: Routes = [
     {
@@ -52,5 +53,9 @@ export const routes: Routes = [
                 component: ComingSoonComponent,
             },
         ],
+    },
+    {
+        path: '**',
+        loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent),
     },
 ];
