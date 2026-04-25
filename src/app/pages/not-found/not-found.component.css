@@ -1,0 +1,36 @@
+.nf-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.nf-code {
+    font-size: 96px;
+    font-weight: 700;
+    color: var(--text-fnt);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.nf-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nf-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: -0.01em;
+}
+
+.nf-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
