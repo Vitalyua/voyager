@@ -2,9 +2,9 @@
 
     <!-- ===== TopBar ===== -->
     <header class="vg-top">
-        <div class="vg-brand">
+        <a class="vg-brand" routerLink="/" aria-label="Voyager — home">
             <img src="assets/voyager_logo.svg" alt="Voyager" class="vg-brand-logo"/>
-        </div>
+        </a>
 
         <nav class="vg-nav">
             @for (link of navLinks; track link.path) {
