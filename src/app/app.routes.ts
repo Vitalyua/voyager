@@ -16,11 +16,6 @@ class ComingSoonComponent {
 
 export const routes: Routes = [
     {
-        path: '',
-        loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent),
-        pathMatch: 'full',
-    },
-    {
         path: 'scan/:awb',
         loadComponent: () => import('./pages/scan/scan.component').then(m => m.ScanComponent),
     },
@@ -28,6 +23,11 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./layout/main-layout.component').then(m => m.MainLayoutComponent),
         children: [
+            {
+                path: '',
+                loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent),
+                pathMatch: 'full',
+            },
             {
                 path: 'dashboard',
                 component: ComingSoonComponent,
@@ -39,14 +39,6 @@ export const routes: Routes = [
             {
                 path: 'shipments/:awb',
                 loadComponent: () => import('./pages/shipments/details/shipments-details.component').then(m => m.ShipmentsDetailsComponent),
-            },
-            {
-                path: 'uld',
-                loadComponent: () => import('./pages/uld/uld-list.component').then(m => m.UldListComponent),
-            },
-            {
-                path: 'uld/new',
-                loadComponent: () => import('./pages/uld/new/uld-new.component').then(m => m.UldNewComponent),
             },
             {
                 path: 'claims',
