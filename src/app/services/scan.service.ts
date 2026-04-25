@@ -20,6 +20,7 @@ export interface ScanAwbInfo {
 export interface ScanFailureReason {
     code: string;
     comment: string;
+    files?: File[];
 }
 
 export interface ScanFailureContact {
@@ -62,6 +63,25 @@ export class ScanService {
     }
 
     public submitFailure(payload: ScanFailurePayload): Observable<ScanResult> {
-        return this.http.post<ScanResult>(`scan/${encodeURIComponent(payload.awb)}/failure`, payload);
+        const reasonsForJson = payload.reasons.map(({code, comment}) => ({code, comment}));
+        const json = {
+            awb: payload.awb,
+            reasons: reasonsForJson,
+            notify: payload.notify,
+            contacts: payload.contacts,
+        };
+
+        const form = new FormData();
+        form.append('payload', JSON.stringify(json));
+        payload.reasons.forEach((reason, i) => {
+            (reason.files ?? []).forEach(file => {
+                form.append(`files[${i}][]`, file, file.name);
+            });
+        });
+
+        return this.http.post<ScanResult>(
+            `scan/${encodeURIComponent(payload.awb)}/failure`,
+            form,
+        );
     }
 }

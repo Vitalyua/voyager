@@ -218,19 +218,47 @@
                             </label>
 
                             <div class="field">
-                                <span class="field-lbl">Photos</span>
-                                <div class="photo-drop">
+                                <span class="field-lbl">Attachments</span>
+                                <label class="photo-drop">
+                                    <input type="file"
+                                           class="photo-input"
+                                           multiple
+                                           accept="image/jpeg,image/png,image/heic,image/heif,application/pdf"
+                                           capture="environment"
+                                           (change)="addFiles(i, asInput($event).files); asInput($event).value = ''"/>
                                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
                                          stroke="currentColor" stroke-width="1.5"
                                          stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                                         <circle cx="12" cy="13" r="4"/>
                                     </svg>
-                                    <span class="photo-hint">Tap to take or upload photos</span>
-                                </div>
+                                    <span class="photo-hint">Tap to take or upload (JPG, PNG, HEIC, PDF · max 10 MB)</span>
+                                </label>
+
+                                @if (r.files.length > 0) {
+                                    <div class="photo-grid">
+                                        @for (f of r.files; track f.name + f.size + f.lastModified; let fi = $index) {
+                                            <div class="photo-tile">
+                                                @if (f.type.startsWith('image/')) {
+                                                    <img class="photo-thumb" [src]="previewUrl(f)" alt=""/>
+                                                } @else {
+                                                    <div class="photo-thumb pdf">PDF</div>
+                                                }
+                                                <button type="button" class="photo-rm"
+                                                        (click)="removeFile(i, fi)" aria-label="Remove">×</button>
+                                                <div class="photo-name mono">{{ f.name }}</div>
+                                                <div class="photo-size">{{ formatSize(f.size) }}</div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
                             </div>
 
                         </div>
+                    }
+
+                    @if (fileError(); as err) {
+                        <div class="file-error">{{ err }}</div>
                     }
 
                     <button class="add-reason" (click)="addReason()">+ Add another reason</button>

@@ -20,7 +20,12 @@ interface Reason {
     l2: string | null;
     l3: string | null;
     comment: string;
+    files: File[];
 }
+
+const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'application/pdf'];
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const MAX_FILES_PER_REASON = 10;
 
 interface Party {
     name: string;
@@ -86,8 +91,10 @@ export class ScanComponent {
     public readonly reasonsL3 = EHCP_L3;
 
     public readonly reasons = signal<Reason[]>([
-        {l1: null, l2: null, l3: null, comment: ''},
+        {l1: null, l2: null, l3: null, comment: '', files: []},
     ]);
+
+    public readonly fileError = signal<string | null>(null);
 
     public readonly notify = signal<boolean>(true);
 
@@ -175,6 +182,7 @@ export class ScanComponent {
                 .map(r => ({
                     code: this.ehcpCode(r),
                     comment: r.comment,
+                    files: r.files,
                 })),
             notify: this.notify(),
             contacts: this.notify()
@@ -199,8 +207,51 @@ export class ScanComponent {
     public addReason(): void {
         this.reasons.update(arr => [
             ...arr,
-            {l1: null, l2: null, l3: null, comment: ''},
+            {l1: null, l2: null, l3: null, comment: '', files: []},
         ]);
+    }
+
+    public addFiles(i: number, fileList: FileList | null): void {
+        if (!fileList || fileList.length === 0) return;
+        const incoming = Array.from(fileList);
+
+        for (const f of incoming) {
+            if (!ALLOWED_MIME.includes(f.type)) {
+                this.fileError.set(`Unsupported file type: ${f.name}`);
+                return;
+            }
+            if (f.size > MAX_FILE_SIZE) {
+                this.fileError.set(`File too large (max 10 MB): ${f.name}`);
+                return;
+            }
+        }
+
+        this.fileError.set(null);
+        this.reasons.update(arr =>
+            arr.map((r, idx) => {
+                if (idx !== i) return r;
+                const merged = [...r.files, ...incoming].slice(0, MAX_FILES_PER_REASON);
+                return {...r, files: merged};
+            }),
+        );
+    }
+
+    public removeFile(reasonIdx: number, fileIdx: number): void {
+        this.reasons.update(arr =>
+            arr.map((r, idx) =>
+                idx === reasonIdx ? {...r, files: r.files.filter((_, k) => k !== fileIdx)} : r,
+            ),
+        );
+    }
+
+    public previewUrl(file: File): string {
+        return file.type.startsWith('image/') ? URL.createObjectURL(file) : '';
+    }
+
+    public formatSize(bytes: number): string {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+        return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
     }
 
     public removeReason(i: number): void {
@@ -245,5 +296,9 @@ export class ScanComponent {
 
     public asValue(e: Event): string {
         return (e.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement).value;
+    }
+
+    public asInput(e: Event): HTMLInputElement {
+        return e.target as HTMLInputElement;
     }
 }
