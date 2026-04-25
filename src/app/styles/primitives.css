@@ -105,19 +105,19 @@
     display: inline-block;
 }
 
-.vg-ctdot.pharma {
+.vg-ctdot.GEN {
+    background: var(--accent);
+}
+
+.vg-ctdot.PIL {
     background: var(--pharma);
 }
 
-.vg-ctdot.perish {
+.vg-ctdot.PER {
     background: var(--perish);
 }
 
-.vg-ctdot.live {
-    background: var(--live);
-}
-
-.vg-ctdot.dg {
+.vg-ctdot.DGR {
     background: var(--dg);
 }
 

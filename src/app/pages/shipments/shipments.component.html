@@ -67,16 +67,23 @@
                         </td>
                         <td class="mono">{{ s.waybill_prefix + '-' + s.waybill_number }}</td>
                         <td>
-                            <span class="muted">{{ s.departureLocation[0].code }}</span>
-                            <span class="faint">&nbsp;→&nbsp;</span>
-                            <span class="muted">{{ s.arrivalLocation[0].code }}</span>
+	                        @for (seg of s.flight.legs; track $index; let last = $last; let first = $first) {
+		                        @if(first){
+			                        <span class="muted">{{ seg.from }}</span>
+			                        <span class="faint">&nbsp;→&nbsp;</span>
+		                        }
+		                        <span class="muted">{{ seg.to }}</span>
+		                        @if (!last) {
+			                        <span class="faint">&nbsp;→&nbsp;</span>
+		                        }
+	                        }
                         </td>
                         <td>
-                            <span class="vg-ctdot"></span>
-                            <!--[class]="s.cargo"--> <!--{{ cargoLabel(s.cargo) }}-->
+                            <span class="vg-ctdot" [class]="s.commodity"></span>
+	                        {{ s.commodity | cargoLabel }}
                         </td>
                         <td class="mono">{{ s.pieces }} pcs / {{ s.totalGrossWeight }} kg</td>
-                        <td class="mono"><!--{{ s.dep }}--></td>
+                        <td class="mono">{{s.flight.legs[0].departure|date:'dd MMM yyyy HH:mm'}}</td>
                         <td>
                             <span class="vg-badge"
                                   [attr.data-st]="s.last_event.eventCode.code | statusCode">

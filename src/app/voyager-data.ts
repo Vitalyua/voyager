@@ -362,6 +362,7 @@ export interface ShipmentRow {
         legs: Legs[];
     };
     totalGrossWeight: number;
+    commodity: string;
 }
 
 export interface Legs {

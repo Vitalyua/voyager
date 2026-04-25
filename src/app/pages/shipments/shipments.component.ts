@@ -9,10 +9,11 @@ import {
 } from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Router} from '@angular/router';
-import {CARGO, ShipmentRow} from '../../voyager-data';
+import {ShipmentRow} from '../../voyager-data';
 import {ShipmentService} from '../../services/shipment.service';
 import {DatePipe} from "@angular/common";
 import {StatusCodePipe, StatusLabelPipe} from '../../pipes/status.pipe';
+import {CargoLabelPipe} from '../../pipes/cargo.pipe';
 
 @Component({
     selector: 'app-shipments',
@@ -24,6 +25,7 @@ import {StatusCodePipe, StatusLabelPipe} from '../../pipes/status.pipe';
         DatePipe,
         StatusCodePipe,
         StatusLabelPipe,
+        CargoLabelPipe,
     ]
 })
 export class ShipmentsComponent implements OnInit {
@@ -81,10 +83,6 @@ export class ShipmentsComponent implements OnInit {
         const rows = this.allRows();
         if (key === 'all') return rows.length;
         return rows.filter(r => r.last_event.eventCode.code === key).length;
-    }
-
-    public cargoLabel(key: string): string {
-        return CARGO[key]?.label ?? key;
     }
 
     public openDetail(awb: ShipmentRow): void {
