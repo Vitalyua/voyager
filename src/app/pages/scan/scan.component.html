@@ -1,0 +1,327 @@
+<div class="scan-page">
+    <div class="scan-frame">
+
+        <!-- ── Header (varies by step) ── -->
+        <header class="scan-hd">
+            @if (step() === 'failure') {
+                <button class="scan-back" (click)="backToChoose()" aria-label="Back">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                </button>
+                <span class="scan-title">Report Failure</span>
+                <span class="mono scan-awb sm">{{ awb() }}</span>
+            } @else if (step() === 'doneFail' || step() === 'doneOk') {
+                <span class="scan-brand">VOYAGER</span>
+                <span class="scan-title"></span>
+                <span class="mono scan-awb sm">{{ awb() }}</span>
+            } @else {
+                <span class="scan-brand">VOYAGER</span>
+                <span class="scan-title"></span>
+                <span class="mono scan-awb">{{ awb() }}</span>
+            }
+        </header>
+
+        <!-- ── Step 1: Confirm FOH ── -->
+        @if (step() === 'foh') {
+            <div class="scan-body">
+                <div class="awb-card">
+                    <div class="awb-route">
+                        <div class="route-stop">
+                            <span class="mono code">HKG</span>
+                            <span class="city">Hong Kong</span>
+                        </div>
+                        <div class="route-leg">
+                            <span class="route-line"></span>
+                            <span class="route-arrow">›</span>
+                        </div>
+                        <div class="route-stop">
+                            <span class="mono code">FRA</span>
+                            <span class="city">Frankfurt</span>
+                        </div>
+                        <div class="route-leg">
+                            <span class="route-line"></span>
+                            <span class="route-arrow">›</span>
+                        </div>
+                        <div class="route-stop">
+                            <span class="mono code">JFK</span>
+                            <span class="city">New York</span>
+                        </div>
+                    </div>
+                    <hr class="awb-div"/>
+                    <div class="awb-meta">
+                        <span class="cargo-pill">
+                            <span class="cargo-dot pharma"></span>
+                            <span class="cargo-name">Pharma</span>
+                        </span>
+                        <span class="dot-sep">·</span>
+                        <span class="meta-mut">12 pcs</span>
+                        <span class="dot-sep">·</span>
+                        <span class="meta-mut">320 kg</span>
+                    </div>
+                    <div class="awb-status">
+                        @if (fohConfirmedAt()) {
+                            <span class="badge ok">FOH confirmed</span>
+                            <span class="mono fnt">{{ fohConfirmedAt() }}</span>
+                        } @else {
+                            <span class="badge warn">Awaiting FOH</span>
+                        }
+                    </div>
+                </div>
+                <p class="scan-hint">
+                    Confirming Freight on Hand starts the acceptance check for this AWB.
+                </p>
+            </div>
+            <footer class="scan-foot stack">
+                <button class="btn-primary lg"
+                        [disabled]="!!fohConfirmedAt()"
+                        (click)="confirmFoh()">Confirm FOH</button>
+                <button class="btn-primary lg"
+                        [disabled]="!fohConfirmedAt()"
+                        (click)="performPhysicalCheck()">Perform Physical Acceptance Check</button>
+            </footer>
+        }
+
+        <!-- ── Step 2: Accept / Failure ── -->
+        @if (step() === 'choose') {
+            <div class="scan-body">
+                <div class="awb-card">
+                    <div class="awb-route">
+                        <div class="route-stop">
+                            <span class="mono code">HKG</span>
+                            <span class="city">Hong Kong</span>
+                        </div>
+                        <div class="route-leg">
+                            <span class="route-line"></span>
+                            <span class="route-arrow">›</span>
+                        </div>
+                        <div class="route-stop">
+                            <span class="mono code">FRA</span>
+                            <span class="city">Frankfurt</span>
+                        </div>
+                        <div class="route-leg">
+                            <span class="route-line"></span>
+                            <span class="route-arrow">›</span>
+                        </div>
+                        <div class="route-stop">
+                            <span class="mono code">JFK</span>
+                            <span class="city">New York</span>
+                        </div>
+                    </div>
+                    <hr class="awb-div"/>
+                    <div class="awb-meta">
+                        <span class="cargo-pill">
+                            <span class="cargo-dot pharma"></span>
+                            <span class="cargo-name">Pharma</span>
+                        </span>
+                        <span class="dot-sep">·</span>
+                        <span class="meta-mut">12 pcs</span>
+                        <span class="dot-sep">·</span>
+                        <span class="meta-mut">320 kg</span>
+                    </div>
+                    <div class="awb-status">
+                        <span class="badge ok">FOH confirmed</span>
+                        <span class="mono fnt">{{ fohConfirmedAt() }}</span>
+                    </div>
+                </div>
+
+                <div class="action-stack">
+                    <button class="action-card ok" (click)="accept()">
+                        <span class="action-icon">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                        </span>
+                        <span class="action-text">
+                            <span class="action-title">Accept shipment</span>
+                            <span class="action-sub">Generate RCS and clear for carriage</span>
+                        </span>
+                    </button>
+
+                    <button class="action-card crit" (click)="openFailure()">
+                        <span class="action-icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </span>
+                        <span class="action-text">
+                            <span class="action-title">Failure shipment</span>
+                            <span class="action-sub">Report exceptions and notify parties</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        }
+
+        <!-- ── Step 3: Failure form ── -->
+        @if (step() === 'failure') {
+            <div class="scan-body">
+                <!-- Reasons -->
+                <div class="section">
+                    <div class="section-hd">Reasons</div>
+
+                    @for (r of reasons(); track $index; let i = $index) {
+                        <div class="reason-card">
+                            <div class="reason-hd">
+                                <span class="reason-label">Reason {{ i + 1 }}</span>
+                                <span class="grow"></span>
+                                @if (reasons().length > 1) {
+                                    <button class="reason-rm" (click)="removeReason(i)" aria-label="Remove">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                             stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"/>
+                                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                        </svg>
+                                    </button>
+                                }
+                            </div>
+
+                            <div class="field">
+                                <span class="field-lbl">Category</span>
+                                <awr-dropdown
+                                        [options]="l1DropdownOptions"
+                                        [ngModel]="r.l1"
+                                        [ngModelOptions]="{standalone: true}"
+                                        (ngModelChange)="setReasonL1(i, $event ?? '')"
+                                        placeholder="Select category">
+                                </awr-dropdown>
+                            </div>
+
+                            <div class="field">
+                                <span class="field-lbl" [class.disabled]="!r.l1">Type</span>
+                                <awr-dropdown
+                                        [options]="l2DropdownOptions(r.l1)"
+                                        [ngModel]="r.l2"
+                                        [ngModelOptions]="{standalone: true}"
+                                        (ngModelChange)="setReasonL2(i, $event ?? '')"
+                                        [placeholder]="r.l1 ? 'Select sub-category' : '—'">
+                                </awr-dropdown>
+                            </div>
+
+                            <div class="field">
+                                <span class="field-lbl" [class.disabled]="!r.l2">Detail</span>
+                                <awr-dropdown
+                                        [options]="l3DropdownOptions(r.l1, r.l2)"
+                                        [ngModel]="r.l3"
+                                        [ngModelOptions]="{standalone: true}"
+                                        (ngModelChange)="setReasonL3(i, $event ?? '')"
+                                        [placeholder]="r.l2 ? 'Select specific issue' : '—'">
+                                </awr-dropdown>
+                            </div>
+
+                            @if (r.l3) {
+                                <div class="dis-row">
+                                    <span class="dis-pill">
+                                        <span class="mono">{{ ehcpCode(r) }}</span>
+                                    </span>
+                                </div>
+                            }
+
+                            <label class="field">
+                                <span class="field-lbl">Comment</span>
+                                <textarea class="field-input field-textarea"
+                                          rows="3"
+                                          [value]="r.comment"
+                                          placeholder="Describe the issue (optional)"
+                                          (input)="setReasonComment(i, asValue($event))"></textarea>
+                            </label>
+
+                            <div class="field">
+                                <span class="field-lbl">Photos</span>
+                                <div class="photo-drop">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                         stroke="currentColor" stroke-width="1.5"
+                                         stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                        <circle cx="12" cy="13" r="4"/>
+                                    </svg>
+                                    <span class="photo-hint">Tap to take or upload photos</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                    <button class="add-reason" (click)="addReason()">+ Add another reason</button>
+                </div>
+
+                <!-- Notify -->
+                <div class="section">
+                    <div class="section-hd">Notify</div>
+                    <div class="notify-card">
+                        <div class="notify-master">
+                            <span class="notify-text">
+                                <span class="notify-title">Notify contacts</span>
+                                <span class="notify-sub">Send report to selected AWB contacts</span>
+                            </span>
+                            <awr-switch
+                                    [ngModel]="notify()"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (ngModelChange)="notify.set(!!$event)">
+                            </awr-switch>
+                        </div>
+
+                        @if (notify()) {
+                            <div class="notify-list">
+                                @for (p of parties; track p.name; let i = $index) {
+                                    <div class="contact-row">
+                                        <awr-checkbox
+                                                [ngModel]="contacts()[i].on"
+                                                [ngModelOptions]="{standalone: true}"
+                                                (ngModelChange)="setContactOn(i, $event)">
+                                        </awr-checkbox>
+                                        <div class="contact-info">
+                                            <div class="contact-name">{{ p.name }}</div>
+                                            <div class="contact-role">{{ p.role }}</div>
+                                        </div>
+                                        @if (contacts()[i].on) {
+                                            <awr-toggle-group
+                                                    [options]="channels"
+                                                    [ngModel]="contacts()[i].ch"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    (ngModelChange)="setContactChannel(i, $event)">
+                                            </awr-toggle-group>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <footer class="scan-foot">
+                <button class="btn-primary lg"
+                        [disabled]="!canSendFailure()"
+                        (click)="sendFailure()">Send
+                </button>
+            </footer>
+        }
+
+        <!-- ── Final: Confirmation ── -->
+        @if (step() === 'doneFail' || step() === 'doneOk') {
+            <div class="scan-body done">
+                <div class="done-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </div>
+                <div class="done-title">
+                    {{ step() === 'doneFail' ? 'Failure Reported' : 'Acceptance Cleared' }}
+                </div>
+                <div class="done-sub">{{ doneSummary() }}</div>
+            </div>
+            <footer class="scan-foot done-foot">
+                <button class="btn-primary" (click)="scanAnother()">Scan another</button>
+                <button class="btn-secondary" (click)="viewAwb()">View AWB</button>
+            </footer>
+        }
+
+    </div>
+</div>

@@ -20,6 +20,10 @@ export const routes: Routes = [
         pathMatch: 'full',
     },
     {
+        path: 'scan/:awb',
+        loadComponent: () => import('./pages/scan/scan.component').then(m => m.ScanComponent),
+    },
+    {
         path: '',
         loadComponent: () => import('./layout/main-layout.component').then(m => m.MainLayoutComponent),
         children: [
