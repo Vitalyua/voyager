@@ -1,0 +1,37 @@
+<div class="vg-app">
+
+    <!-- ===== TopBar ===== -->
+    <header class="vg-top">
+        <div class="vg-brand">
+            <img src="assets/voyager_logo.svg" alt="Voyager" class="vg-brand-logo"/>
+        </div>
+
+        <nav class="vg-nav">
+            @for (link of navLinks; track link.path) {
+                <a [routerLink]="[link.path]"
+                   routerLinkActive="active">
+                    {{ link.label }}
+                </a>
+            }
+        </nav>
+
+        <div class="vg-topright">
+            <span class="vg-clock">{{ clock() }}</span>
+
+            <span class="vg-live">
+        <span class="vg-live-dot"></span>
+        Live &middot; CHAMP 0s
+      </span>
+
+            <span class="vg-desk">HKG-OPS</span>
+
+            <span class="vg-avatar">KL</span>
+        </div>
+    </header>
+
+    <!-- ===== Main content area ===== -->
+    <main class="vg-main">
+        <router-outlet/>
+    </main>
+
+</div>
