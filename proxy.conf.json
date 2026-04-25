@@ -1,1 +1,8 @@
-{}
+{
+  "/api": {
+    "target": "https://voyager.awery.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

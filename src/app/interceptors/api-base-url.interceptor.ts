@@ -1,7 +1,6 @@
 import {HttpInterceptorFn} from '@angular/common/http';
 
-export const API_BASE_URL = 'https://voyager.awery.com/api/';
-
+export const API_BASE_URL = '/api/';
 
 export const apiBaseUrlInterceptor: HttpInterceptorFn = (req, next) => {
     if (/^https?:\/\//i.test(req.url)) {
