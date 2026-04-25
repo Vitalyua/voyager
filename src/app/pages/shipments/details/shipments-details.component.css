@@ -303,6 +303,7 @@
     gap: 10px;
     align-items: flex-start;
     margin-bottom: 14px;
+    justify-content: space-between;
 }
 
 .qr-title {
@@ -330,6 +331,14 @@
 .qr-svg {
     background: #fff;
     display: block;
+    width: 220px;
+    height: 220px;
+}
+
+.qr-svg svg {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .qr-awb {
@@ -348,4 +357,22 @@
     gap: 8px;
     margin-top: 14px;
     align-items: center;
+    justify-content: space-between;
+}
+
+.qr-foot > div {
+    gap: 8px;
+    display: flex;
+}
+
+/* ── temperature chart demo ── */
+.awb-chart {
+    padding: 0 24px 24px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.awb-chart .vg-panel {
+    min-width: 0;
+    overflow: hidden;
 }
