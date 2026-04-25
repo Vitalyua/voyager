@@ -20,6 +20,34 @@ export const CARGO: Record<string, CargoMeta> = {
     general: {label: 'General', dot: 'general', range: [-5, 35]},
 };
 
+export const STATUS: Record<string, string> = {
+    all: 'All',
+    NFD: 'Delivered',
+    DLV: 'Delivered',
+    RCS: 'Received',
+    DEP: 'Departed',
+    ARR: 'Arrived',
+    AWD: 'Awaiting delivery',
+    RCF: 'Received from flight',
+    MAN: 'Manifest submitted',
+    FOH: 'Freight on hand',
+};
+
+export const STATUS_TYPE: Record<string, string> = {
+    NFD: 'delivered',
+    DLV: 'delivered',
+    RCS: 'delivered',
+    DEP: 'delivered',
+    AWD: 'delivered',
+    RCF: 'delivered',
+    ARR: 'delivered',
+    MAN: 'in_transit',
+    FOH: 'in_transit',
+    SAC: 'in_transit',
+    BKD: 'booked',
+};
+
+
 export interface DistressedAWB {
     awb: string;
     route: string[];
@@ -285,239 +313,70 @@ export const SEED_ULDS: ULDItem[] = [
     },
 ];
 
-export interface ShipmentRow {
-    awb: string;
-    route: string[];
-    cargo: string;
-    pcs: number;
-    kg: string;
-    dep: string;
-    status: string;
-    last: string;
+// --- Raw API types ---
+
+export interface OneRecordRef {
+    '@id': string;
 }
 
-export const SEED_SHIPMENTS: ShipmentRow[] = [
-    {
-        awb: '180-42817733',
-        route: ['HKG', 'FRA', 'JFK'],
-        cargo: 'live',
-        pcs: 4,
-        kg: '1,840',
-        dep: '15:05 HKG',
-        status: 'distressed',
-        last: 'FOH \u00b7 14:02 HKG'
-    },
-    {
-        awb: '020-66451287',
-        route: ['HKG', 'FRA', 'JFK'],
-        cargo: 'pharma',
-        pcs: 12,
-        kg: '320',
-        dep: '15:50 HKG',
-        status: 'distressed',
-        last: 'RCS \u00b7 14:23 HKG'
-    },
-    {
-        awb: '180-55003311',
-        route: ['HKG', 'LAX'],
-        cargo: 'general',
-        pcs: 44,
-        kg: '2,110',
-        dep: '16:20 HKG',
-        status: 'booked',
-        last: 'FOH \u00b7 13:59 HKG'
-    },
-    {
-        awb: '057-88120045',
-        route: ['AMS', 'DXB', 'SIN'],
-        cargo: 'perish',
-        pcs: 14,
-        kg: '980',
-        dep: '14:40 AMS',
-        status: 'distressed',
-        last: 'DEP \u00b7 13:48 AMS'
-    },
-    {
-        awb: '176-31209876',
-        route: ['DXB', 'LHR'],
-        cargo: 'dg',
-        pcs: 6,
-        kg: '420',
-        dep: '18:00 DXB',
-        status: 'booked',
-        last: 'AWD \u00b7 13:22 DXB'
-    },
-    {
-        awb: '180-99207711',
-        route: ['HKG', 'SIN'],
-        cargo: 'general',
-        pcs: 22,
-        kg: '1,450',
-        dep: '19:10 HKG',
-        status: 'booked',
-        last: 'BKD \u00b7 11:02 HKG'
-    },
-    {
-        awb: '057-40019988',
-        route: ['FRA', 'JFK'],
-        cargo: 'perish',
-        pcs: 8,
-        kg: '410',
-        dep: '12:40 FRA',
-        status: 'in_transit',
-        last: 'DEP \u00b7 12:15 FRA'
-    },
-    {
-        awb: '020-30044512',
-        route: ['FRA', 'JFK'],
-        cargo: 'pharma',
-        pcs: 2,
-        kg: '48',
-        dep: '18:05 FRA',
-        status: 'booked',
-        last: 'RCS \u00b7 14:02 FRA'
-    },
-    {
-        awb: '176-82244901',
-        route: ['DXB', 'AMS'],
-        cargo: 'general',
-        pcs: 35,
-        kg: '3,920',
-        dep: '20:45 DXB',
-        status: 'booked',
-        last: 'BKD \u00b7 09:20 DXB'
-    },
-    {
-        awb: '180-11220033',
-        route: ['HKG', 'LHR'],
-        cargo: 'perish',
-        pcs: 10,
-        kg: '620',
-        dep: '22:10 HKG',
-        status: 'booked',
-        last: 'BKD \u00b7 10:15 HKG'
-    },
-    {
-        awb: '057-50120001',
-        route: ['CDG', 'JFK'],
-        cargo: 'general',
-        pcs: 18,
-        kg: '1,040',
-        dep: '14:00 CDG',
-        status: 'in_transit',
-        last: 'DEP \u00b7 14:02 CDG'
-    },
-    {
-        awb: '020-60011977',
-        route: ['FRA', 'DXB'],
-        cargo: 'pharma',
-        pcs: 4,
-        kg: '88',
-        dep: '21:30 FRA',
-        status: 'booked',
-        last: 'BKD \u00b7 11:45 FRA'
-    },
-    {
-        awb: '180-70080001',
-        route: ['HKG', 'AMS'],
-        cargo: 'general',
-        pcs: 28,
-        kg: '2,020',
-        dep: '23:55 HKG',
-        status: 'booked',
-        last: 'BKD \u00b7 12:10 HKG'
-    },
-    {
-        awb: '176-90014456',
-        route: ['SIN', 'DXB'],
-        cargo: 'dg',
-        pcs: 3,
-        kg: '180',
-        dep: '17:10 SIN',
-        status: 'booked',
-        last: 'AWD \u00b7 12:30 SIN'
-    },
-    {
-        awb: '020-10020033',
-        route: ['FRA', 'SIN'],
-        cargo: 'general',
-        pcs: 52,
-        kg: '4,410',
-        dep: 'Yesterday',
-        status: 'delivered',
-        last: 'DLV \u00b7 08:50 SIN'
-    },
-    {
-        awb: '057-22034411',
-        route: ['AMS', 'JFK'],
-        cargo: 'perish',
-        pcs: 20,
-        kg: '1,260',
-        dep: 'Yesterday',
-        status: 'delivered',
-        last: 'DLV \u00b7 07:12 JFK'
-    },
-    {
-        awb: '180-33221100',
-        route: ['HKG', 'DXB', 'FRA'],
-        cargo: 'general',
-        pcs: 14,
-        kg: '940',
-        dep: '11:05 HKG',
-        status: 'in_transit',
-        last: 'RCF \u00b7 11:12 DXB'
-    },
-    {
-        awb: '176-44077880',
-        route: ['DXB', 'JFK'],
-        cargo: 'dg',
-        pcs: 8,
-        kg: '510',
-        dep: '13:20 DXB',
-        status: 'in_transit',
-        last: 'DEP \u00b7 13:25 DXB'
-    },
-    {
-        awb: '020-55110020',
-        route: ['FRA', 'HKG'],
-        cargo: 'general',
-        pcs: 36,
-        kg: '3,150',
-        dep: '11:50 FRA',
-        status: 'in_transit',
-        last: 'DEP \u00b7 11:55 FRA'
-    },
-    {
-        awb: '180-66220088',
-        route: ['HKG', 'FRA'],
-        cargo: 'pharma',
-        pcs: 6,
-        kg: '120',
-        dep: 'Tomorrow',
-        status: 'booked',
-        last: 'BKD \u00b7 14:00 HKG'
-    },
-    {
-        awb: '057-77330044',
-        route: ['CDG', 'HKG'],
-        cargo: 'general',
-        pcs: 11,
-        kg: '780',
-        dep: 'Tomorrow',
-        status: 'booked',
-        last: 'BKD \u00b7 13:50 CDG'
-    },
-    {
-        awb: '020-88441100',
-        route: ['FRA', 'LAX'],
-        cargo: 'general',
-        pcs: 40,
-        kg: '2,960',
-        dep: 'Yesterday',
-        status: 'delivered',
-        last: 'DLV \u00b7 22:02 LAX'
-    },
-];
+export interface OneRecordTyped {
+    '@type': string[];
+    '@id': string;
+    code: string;
+}
+
+export interface LocationCode {
+    '@type': string[];           // ["CodeListElement"]
+    '@id': string;               // "...iata-three-letter-codes#HKG"
+    code: string;
+}
+
+export interface EventLocation {
+    '@type': string[];           // ["Location"]
+    '@id': string;               // "internal:uuid"
+    locationCodes: LocationCode[];
+}
+
+export interface LogisticsEvent {
+    '@type': string[];
+    '@id': string;
+    eventFor: OneRecordRef;
+    eventTimeType: OneRecordTyped; // @id: "Actual" | "Scheduled" | ...
+    eventDate: string;             // ISO 8601
+    eventLocation: EventLocation;
+    eventCode: OneRecordTyped;     // @id: "...StatusCode#NFD"
+}
+
+export interface ShipmentRow {
+    id: number;
+    created: string;
+    logistic_object_id: string;
+    logistic_object_type: string;
+    waybill_prefix: string;
+    waybill_number: string;
+    pieces: number;
+    last_event: LogisticsEvent;
+    departureLocation: LocationCode[];
+    arrivalLocation: LocationCode[];
+    flight: {
+        legs: Legs[];
+    };
+    totalGrossWeight: number;
+}
+
+export interface Legs {
+    from: string;
+    to: string;
+    departure: string;
+    arrival: string;
+    flight: string;
+    aircraft: string;
+}
+
+export interface ShipmentListResponse {
+    count: number;
+    items: ShipmentRow[];
+}
 
 export interface EventItem {
     t: string;
