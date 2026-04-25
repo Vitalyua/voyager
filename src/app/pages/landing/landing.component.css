@@ -1,0 +1,375 @@
+/* ── Page ── */
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Hero ── */
+.hero {
+    position: relative;
+    padding: 3rem 2rem;
+    text-align: center;
+    overflow: hidden;
+    color: #fff;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    z-index: 0;
+}
+
+.hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.event-badge {
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.hero h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+}
+
+.accent {
+    color: #a78bfa;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    font-weight: 300;
+    opacity: 0.85;
+    margin-bottom: 2rem;
+}
+
+.event-details {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.detail {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* ── Logos ── */
+.logos-section {
+    padding: 2rem;
+    text-align: center;
+    background: #fff;
+}
+
+.logos-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.logo-card img {
+    height: 60px !important;
+    width: auto;
+    max-width: 260px;
+    display: block;
+}
+
+.logo-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.logo-text.awery {
+    color: #1a3e72;
+}
+
+.logo-text.cargobooking {
+    color: #e65100;
+}
+
+.logo-desc {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 400;
+}
+
+.logo-divider {
+    font-size: 1.5rem;
+    color: #ccc;
+    font-weight: 300;
+}
+
+.powered-by {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.powered-by img {
+    max-height: 28px;
+}
+
+.logo-text-inline {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.logo-text-inline.onerecord {
+    color: #003f87;
+}
+
+/* ── Team ── */
+.team-section {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.team-section h2,
+.tech-section h2 {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #1a1a2e;
+}
+
+.team-lead {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.team-card.lead {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 2.5rem;
+}
+
+.team-card.lead .avatar-img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+}
+
+.team-card.lead .info h3 {
+    font-size: 1.15rem;
+}
+
+.team-grid.developers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+a.team-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.team-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    padding: 1.5rem 1rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.team-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #eee;
+}
+
+.team-card .info h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+}
+
+.role {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+/* ── Tech Stack ── */
+.tech-section {
+    padding: 3rem 2rem;
+    background: #fff;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.tech-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    background: #f8f9fc;
+    transition: transform 0.2s;
+}
+
+.tech-card:hover {
+    transform: translateY(-2px);
+}
+
+.tech-card span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+}
+
+/* ── Status ── */
+.status-section {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.status-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+}
+
+.status-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #22c55e;
+    flex-shrink: 0;
+}
+
+.status-icon.pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+    50% {
+        opacity: 0.8;
+        box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+}
+
+.status-card h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #166534;
+    margin-bottom: 0.15rem;
+}
+
+.status-card p {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+/* ── Footer ── */
+.footer {
+    margin-top: auto;
+    padding: 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #aaa;
+    border-top: 1px solid #eee;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .event-details {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .logos-row {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .logo-divider {
+        display: none;
+    }
+
+    .team-grid.developers {
+        grid-template-columns: 1fr;
+    }
+}

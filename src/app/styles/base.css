@@ -1,0 +1,52 @@
+/* Base reset + document defaults. */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg-base);
+    color: var(--text-pri);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.4;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-str);
+    border-radius: var(--radius-md);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b8b8b8;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    appearance: none;
+}
+
+awr-toasts {
+    position: fixed !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    z-index: 10000 !important;
+}

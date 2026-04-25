@@ -1,0 +1,191 @@
+<!-- ── breadcrumb ── -->
+<section class="awb-crumb">
+    <nav class="vg-crumb">
+        <a routerLink="/shipments">Shipments</a> /
+        <span class="muted">{{ d.awb }}</span>
+    </nav>
+</section>
+
+<!-- ── header ── -->
+<section class="awb-hd">
+    <div class="hd-left col">
+        <div class="mono awb-num">{{ d.awb }}</div>
+
+        <div class="row hd-route">
+            <div class="vg-route">
+                @for (apt of d.route; track $index; let last = $last) {
+                    <span class="apt">{{ apt }}</span>
+                    @if (!last) {
+                        <span class="leg"></span>
+                    }
+                }
+            </div>
+            <span class="faint">·</span>
+            <span class="muted">{{ routeCities }}</span>
+        </div>
+
+        <div class="row hd-meta">
+            <span class="cargo-pill">
+                <span class="vg-ctdot" [class]="d.cargo"></span>{{ cargoLabel }}
+            </span>
+            <span class="mono muted">{{ d.pcs }} pcs · {{ d.kg }} kg</span>
+            <span class="mono muted">tracker 0C4F · target 2°–8°C</span>
+        </div>
+    </div>
+
+    <div class="hd-right col">
+        <span class="vg-badge" [attr.data-st]="d.status">Distressed · predicted breach</span>
+        <span class="mono muted hd-eta">ETA {{ d.eta }}</span>
+        <div class="row hd-actions">
+            <button class="vg-btn">Open in Cargo iQ</button>
+            <button class="vg-btn primary" (click)="showQr.set(true)">+ Print QR</button>
+        </div>
+    </div>
+</section>
+
+<!-- ── three-column body ── -->
+<section class="awb-body">
+
+    <!-- ── A · timeline ── -->
+    <div class="vg-panel">
+        <div class="vg-panel-hd">
+            <h3>Cargo iQ timeline</h3>
+            @if (lateCount > 0) {
+                <span class="count warn">{{ lateCount }} late</span>
+            }
+            <span class="spacer"></span>
+            <div class="vg-tabs">
+                <button [class.active]="timelineTab() === 'expected'"
+                        (click)="timelineTab.set('expected')">Expected vs Actual
+                </button>
+                <button [class.active]="timelineTab() === 'legs'"
+                        (click)="timelineTab.set('legs')">Legs
+                </button>
+            </div>
+        </div>
+        <div class="tl-wrap">
+            @for (m of d.timeline; track m.code; let last = $last) {
+                <div class="tl-row" [attr.data-st]="m.status" [class.last]="last">
+                    <div class="tl-rail">
+                        @if (!last) {
+                            <span class="tl-line"></span>
+                        }
+                        <span class="tl-dot"></span>
+                    </div>
+                    <div class="tl-content">
+                        <div class="mono tl-code">{{ m.code }}</div>
+                        <div class="row tl-times">
+                            <span class="muted">Exp <span class="mono">{{ m.exp || '—' }}</span></span>
+                            <span class="muted">
+                                Act
+                                @if (m.act) {
+                                    <span class="mono"
+                                          [class.tl-warn]="m.status === 'warn'"
+                                          [class.tl-crit]="m.status === 'crit'">
+                                        {{ m.act }}@if (m.delta) {
+                                        <span class="tl-delta"> ({{ m.delta }})</span>
+                                    }
+                                    </span>
+                                } @else {
+                                    <span class="faint">—</span>
+                                }
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- ── B · exceptions ── -->
+    <div class="vg-panel">
+        <div class="vg-panel-hd">
+            <h3>Exceptions</h3>
+            <span class="count crit">{{ d.exceptions.length }}</span>
+            <span class="spacer"></span>
+            <button class="vg-btn sm">+ File</button>
+        </div>
+        <div class="vg-panel-body">
+            @for (e of d.exceptions; track $index) {
+                <div class="vg-card crit">
+                    <div class="hdr">
+                        <span class="exc-reason">{{ e.reason }}</span>
+                        <span class="spacer"></span>
+                        <span class="mono muted exc-when">{{ e.when }}</span>
+                    </div>
+                    <div class="row exc-body">
+                        @if (e.photo) {
+                            <div class="vg-placeholder exc-photo">photo</div>
+                        }
+                        <div class="muted exc-comment">{{ e.comment }}</div>
+                    </div>
+                    <div class="foot">
+                        <span class="mono exc-who">by {{ e.who }}</span>
+                        <button class="vg-btn sm">Resolve</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- ── C · notified parties ── -->
+    <div class="vg-panel">
+        <div class="vg-panel-hd">
+            <h3>Notified parties</h3>
+            <span class="count">{{ selectedParties }}/{{ d.parties.length }}</span>
+            <span class="spacer"></span>
+            <button class="vg-btn sm">+</button>
+        </div>
+        <div class="vg-panel-body">
+            @for (p of d.parties; track $index) {
+                <div class="vg-card party-card" [class.party-sel]="p.sel">
+                    <span class="vg-avatar party-avatar">{{ initials(p.name) }}</span>
+                    <div class="col party-info">
+                        <span class="party-name">{{ p.name }}</span>
+                        <span class="muted party-meta">{{ p.role }} · {{ p.ch }}</span>
+                    </div>
+                    @if (p.sel) {
+                        <span class="party-check">✓</span>
+                    } @else {
+                        <span class="faint party-add">add</span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+</section>
+
+<!-- ── Print QR modal ── -->
+@if (showQr()) {
+    <div class="vg-modal-bg" (click)="showQr.set(false)">
+        <div class="vg-modal qr-modal" (click)="$event.stopPropagation()">
+            <div class="row qr-hd">
+                <div class="col">
+                    <div class="qr-title">Print sticker QR</div>
+                    <div class="muted t11">Warehouse will scan to file exceptions.</div>
+                </div>
+                <span class="spacer"></span>
+                <button class="vg-btn ghost qr-close" (click)="showQr.set(false)">×</button>
+            </div>
+
+            <div class="qr-canvas">
+                <svg class="qr-svg" viewBox="0 0 25 25" width="220" height="220"
+                     shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+                    @for (c of qrCells; track $index) {
+                        <rect [attr.x]="c.x" [attr.y]="c.y" width="1" height="1" fill="#0b0f14"/>
+                    }
+                </svg>
+                <div class="mono qr-awb">{{ d.awb }}</div>
+                <div class="mono qr-url">voyager.demo/scan/{{ d.awb }}</div>
+            </div>
+
+            <div class="row qr-foot">
+                <span class="muted t11 mono">avery 5163 · 2×4"</span>
+                <span class="spacer"></span>
+                <button class="vg-btn" (click)="showQr.set(false)">Cancel</button>
+                <button class="vg-btn primary">Print</button>
+            </div>
+        </div>
+    </div>
+}

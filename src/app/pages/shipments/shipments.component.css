@@ -1,0 +1,102 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px 28px;
+}
+
+.vg-pagehd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+}
+
+.vg-pagehd h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.hd-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* search input — wider variant */
+.vg-pagehd .vg-input {
+    width: 240px;
+}
+
+/* filter chips — wrap row */
+.chip-row {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+/* table wrapper — fills remaining height */
+.table-wrap {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border-sub);
+    border-radius: var(--radius-xl);
+    background: var(--bg-elev);
+}
+
+.vg-table tbody tr {
+    cursor: pointer;
+}
+
+/* status indicator column — slim left bar */
+.col-status {
+    width: 6px;
+    padding: 0 !important;
+}
+
+.status-bar {
+    display: block;
+    width: 4px;
+    height: 100%;
+    min-height: 36px;
+    border-radius: 2px;
+}
+
+.status-bar[data-st="booked"] {
+    background: var(--info);
+}
+
+.status-bar[data-st="in_transit"] {
+    background: var(--accent);
+}
+
+.status-bar[data-st="delivered"] {
+    background: var(--ok);
+}
+
+.status-bar[data-st="distressed"] {
+    background: var(--crit);
+}
+
+/* status badge variants — by data-st */
+.vg-badge[data-st="booked"] {
+    background: rgba(var(--info-rgb), 0.14);
+    color: var(--info);
+}
+
+.vg-badge[data-st="in_transit"] {
+    background: rgba(var(--accent-rgb), 0.14);
+    color: var(--accent-deep);
+}
+
+.vg-badge[data-st="delivered"] {
+    background: rgba(var(--ok-rgb), 0.14);
+    color: var(--ok);
+}
+
+.vg-badge[data-st="distressed"] {
+    background: rgba(var(--crit-rgb), 0.14);
+    color: var(--crit);
+}

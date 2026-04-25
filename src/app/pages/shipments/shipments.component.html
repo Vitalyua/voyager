@@ -1,0 +1,72 @@
+<!-- ── page header ── -->
+<div class="vg-pagehd">
+    <h1>Shipments</h1>
+    <div class="hd-right">
+        <input
+                class="vg-input"
+                type="text"
+                placeholder="Search AWB, route, cargo…"
+                [value]="search()"
+                (input)="search.set(asInput($event).value)"
+        />
+        <button class="vg-btn primary">+ New AWB</button>
+    </div>
+</div>
+
+<!-- ── filter chips ── -->
+<div class="chip-row">
+    @for (f of filters; track f.key) {
+        <button
+                class="vg-chip"
+                [class.active]="activeFilter() === f.key"
+                (click)="activeFilter.set(f.key)"
+        >
+            {{ f.label }}
+            <span class="num">{{ filterCount(f.key) }}</span>
+        </button>
+    }
+</div>
+
+<!-- ── dense table ── -->
+<div class="table-wrap">
+    <table class="vg-table">
+        <thead>
+        <tr>
+            <th class="col-status"></th>
+            <th>AWB Number</th>
+            <th>Route</th>
+            <th>Cargo</th>
+            <th>Pcs / Weight</th>
+            <th>Scheduled</th>
+            <th>Status</th>
+            <th>Last event</th>
+        </tr>
+        </thead>
+        <tbody>
+            @for (s of filteredRows(); track s.awb) {
+                <tr (click)="openDetail(s.awb)">
+                    <td class="col-status">
+                        <span class="status-bar" [attr.data-st]="s.status"></span>
+                    </td>
+                    <td class="mono">{{ s.awb }}</td>
+                    <td>
+                        @for (seg of s.route; track $index; let last = $last) {
+                            <span class="muted">{{ seg }}</span>
+                            @if (!last) {
+                                <span class="faint">&nbsp;→&nbsp;</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <span class="vg-ctdot" [class]="s.cargo"></span>
+                        {{ cargoLabel(s.cargo) }}
+                    </td>
+                    <td class="mono">{{ s.pcs }} pcs / {{ s.kg }} kg</td>
+                    <td class="mono">{{ s.dep }}</td>
+                    <td><span class="vg-badge" [attr.data-st]="s.status">{{ statusLabel(s.status) }}</span></td>
+                    <td class="mono muted">{{ s.last }}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
