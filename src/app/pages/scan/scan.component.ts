@@ -160,17 +160,12 @@ export class ScanComponent {
     }
 
     public performPhysicalCheck(): void {
-        this.api.confirmRcs(this.awb()).subscribe();
+        this.api.submitAcceptance({awb: this.awb(), fohConfirmedAt: this.fohConfirmedAt()}).subscribe();
         this.step.set('choose');
     }
 
     public accept(): void {
-        this.api
-            .submitAcceptance({
-                awb: this.awb(),
-                fohConfirmedAt: this.fohConfirmedAt(),
-            })
-            .subscribe();
+        this.api.confirmRcs(this.awb()).subscribe();
         this.step.set('doneOk');
     }
 
