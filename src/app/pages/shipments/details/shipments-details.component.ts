@@ -7,10 +7,12 @@ import {AWB_DETAIL, IATA, CARGO, ShipmentRow, ShipmentDetails, NotifyContacts} f
 import {TemperatureChartComponent} from '../../../shared/temperature-chart/temperature-chart.component';
 import {CONTAINER_PRESETS} from '../../../shared/temperature-chart/container-presets';
 import {RealRouteInput} from '../../../shared/temperature-chart/temperature-chart.types';
-import {takeUntilDestroyed, toSignal} from "@angular/core/rxjs-interop";
-import {map} from "rxjs";
+import {buildRealRouteInput, deriveWeatherWindows} from '../../../shared/temperature-chart/route-input-builder';
+import {takeUntilDestroyed, toObservable, toSignal} from "@angular/core/rxjs-interop";
+import {filter, map, switchMap, take} from "rxjs";
 import {ShipmentService} from "../../../services/shipment.service";
 import {AirportService} from "../../../services/airport.service";
+import {WeatherService, WeatherRequest} from "../../../services/weather.service";
 import {CargoLabelPipe} from "../../../pipes/cargo.pipe";
 import {StatusCodePipe, StatusLabelPipe} from "../../../pipes/status.pipe";
 import {DatePipe} from "@angular/common";
@@ -49,72 +51,14 @@ export class ShipmentsDetailsComponent {
     private readonly destroyRef = inject(DestroyRef);
     private readonly route = inject(ActivatedRoute);
     private readonly airportsService = inject(AirportService);
+    private readonly weatherService = inject(WeatherService);
+    private readonly airportsReady$ = toObservable(this.airportsService.byIata).pipe(
+        filter(m => m.size > 0),
+        take(1),
+    );
 
     public readonly d = AWB_DETAIL;
-    /**
-     * Demo dummy route for <app-temperature-chart>.
-     * Replace flights/weather with real booking + forecast data when wiring to API.
-     * Structure:
-     *   - container       — pick preset from CONTAINER_PRESETS or pass a ContainerSpec
-     *   - flights[]       — ordered flight legs (origin, destination, departure, arrival)
-     *   - weather[]       — hourly air temps per IATA, must cover ground/layover windows
-     *   - baselineAmbient — constant ambient (°C) for the green comparison line, null to hide
-     */
-    public readonly demoRoute: RealRouteInput = {
-        container: CONTAINER_PRESETS['vaQMed21Premium'],
-        flights: [
-            {
-                flightNumber: 'LH600',
-                origin: 'FRA',
-                destination: 'DXB',
-                departure: new Date('2026-07-15T08:00:00Z'),
-                arrival: new Date('2026-07-15T16:00:00Z'),
-            },
-            {
-                flightNumber: 'CX734',
-                origin: 'DXB',
-                destination: 'HKG',
-                departure: new Date('2026-07-16T01:00:00Z'),
-                arrival: new Date('2026-07-16T13:30:00Z'),
-            },
-        ],
-        weather: [
-            {
-                iataCode: 'FRA',
-                hourlyTemperatures: [
-                    {time: new Date('2026-07-15T07:00:00Z'), temp: 18},
-                    {time: new Date('2026-07-15T08:00:00Z'), temp: 20},
-                ],
-                applySolar: false,
-            },
-            {
-                iataCode: 'DXB',
-                hourlyTemperatures: [
-                    {time: new Date('2026-07-15T16:00:00Z'), temp: 42},
-                    {time: new Date('2026-07-15T17:00:00Z'), temp: 41},
-                    {time: new Date('2026-07-15T18:00:00Z'), temp: 40},
-                    {time: new Date('2026-07-15T19:00:00Z'), temp: 38},
-                    {time: new Date('2026-07-15T20:00:00Z'), temp: 36},
-                    {time: new Date('2026-07-15T21:00:00Z'), temp: 34},
-                    {time: new Date('2026-07-15T22:00:00Z'), temp: 33},
-                    {time: new Date('2026-07-15T23:00:00Z'), temp: 32},
-                    {time: new Date('2026-07-16T00:00:00Z'), temp: 31},
-                    {time: new Date('2026-07-16T01:00:00Z'), temp: 31},
-                ],
-                applySolar: true,
-            },
-            {
-                iataCode: 'HKG',
-                hourlyTemperatures: [
-                    {time: new Date('2026-07-16T13:00:00Z'), temp: 30},
-                    {time: new Date('2026-07-16T14:00:00Z'), temp: 31},
-                ],
-                applySolar: true,
-            },
-        ],
-        baselineAmbient: 20,
-        tailHours: 0,
-    };
+    public readonly realRoute = signal<RealRouteInput | null>(null);
     public readonly routeCities = computed(() => {
         if (!this.awbInfo() || !this.airportsService.iatas().size) return '';
         return [this.airportsService.getCity(this.awbInfo()!.flight!.legs[0].from), ...this.awbInfo()!.flight!.legs.map(c => this.airportsService.getCity(c.to) ?? c)].join(' → ')
@@ -156,6 +100,7 @@ export class ShipmentsDetailsComponent {
         effect(() => {
             const a = this.awb();
             if (!a) return;
+            this.realRoute.set(null);
             this.api.getAwb(a.split('-')[0], a.split('-')[1])
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe(info => {
@@ -184,7 +129,49 @@ export class ShipmentsDetailsComponent {
                         this.qrSvgRaw = svg;
                         this.qrSvg.set(this.sanitizer.bypassSecurityTrustHtml(svg));
                     });
+
+                    this.fetchWeatherFor(info);
                 });
+        });
+    }
+
+    private fetchWeatherFor(info: ShipmentDetails): void {
+        const legs = info.flight?.legs ?? [];
+        if (legs.length === 0) {
+            this.realRoute.set(null);
+            return;
+        }
+        const targetId = info.id;
+        const windows = deriveWeatherWindows(legs);
+
+        this.airportsReady$.pipe(
+            switchMap(byIata => {
+                const requests: WeatherRequest[] = [];
+                for (const [iata, win] of windows) {
+                    const a = byIata.get(iata);
+                    if (!a) continue;
+                    requests.push({iata, lat: a.lat, lng: a.lng, start: win.start, end: win.end});
+                }
+                return this.weatherService.getHourlyForecast(requests);
+            }),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe({
+            next: weather => {
+                if (this.awbInfo()?.id !== targetId) return;
+                if (weather.size < windows.size) {
+                    this.realRoute.set(null);
+                    return;
+                }
+                this.realRoute.set(buildRealRouteInput({
+                    legs,
+                    weather,
+                    container: CONTAINER_PRESETS['vaQMed21Premium'],
+                }));
+            },
+            error: err => {
+                console.warn('Weather forecast failed', err);
+                if (this.awbInfo()?.id === targetId) this.realRoute.set(null);
+            },
         });
     }
 

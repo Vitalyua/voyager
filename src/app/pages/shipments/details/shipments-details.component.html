@@ -132,7 +132,10 @@
 						<div class="row exc-body">
 							@if (e.attachments) {
 								@for (attachment of e.attachments; track $index) {
-									<a [href]="attachment.url" target="_blank" class="vg-placeholder exc-photo" [style.background]="'url('+attachment.url+')'">photo</a>
+									<a [href]="attachment.url"
+									   target="_blank"
+									   class="vg-placeholder exc-photo"
+									   [style.background]="'url('+attachment.url+')'"></a>
 								}
 							}
 							<div class="muted exc-comment">{{ e.comment }}</div>
@@ -224,22 +227,29 @@
 
 	</section>
 
-	<!-- ── temperature chart demo ── -->
-	<section class="awb-chart">
-		<div class="vg-panel">
-			<div class="vg-panel-hd">
-				<h3>Temperature forecast</h3>
-				<span class="muted t11">{{ demoRoute.container.name }}
-					· target {{ demoRoute.container.targetRange.min }}
-					–{{ demoRoute.container.targetRange.max }}°C</span>
-				<span class="spacer"></span>
-				<span class="muted t11 mono">demo data</span>
+	<!-- ── temperature chart ── -->
+	@if (awbInfo()?.flight?.legs?.length) {
+		<section class="awb-chart">
+			<div class="vg-panel">
+				<div class="vg-panel-hd">
+					<h3>Temperature forecast</h3>
+					@if (realRoute(); as route) {
+						<span class="muted t11">{{ route.container.name }}
+							· target {{ route.container.targetRange.min }}
+							–{{ route.container.targetRange.max }}°C</span>
+					}
+					<span class="spacer"></span>
+				</div>
+				<div class="vg-panel-body">
+					@if (realRoute(); as route) {
+						<app-temperature-chart [data]="route" [height]="420"/>
+					} @else {
+						<div class="muted t12" style="padding: 24px; text-align: center;">Loading weather forecast…</div>
+					}
+				</div>
 			</div>
-			<div class="vg-panel-body">
-				<app-temperature-chart [data]="demoRoute" [height]="420"/>
-			</div>
-		</div>
-	</section>
+		</section>
+	}
 
 	<!-- ── Print QR modal ── -->
 	@if (showQr()) {
