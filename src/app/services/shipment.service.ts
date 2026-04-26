@@ -1,7 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, map} from 'rxjs';
-import {NotifiedContactPayload, NotifyContacts, ShipmentDetails, ShipmentListResponse, ShipmentRow} from '../voyager-data';
+import {FailureReason, NotifiedContactPayload, NotifyContacts, ShipmentDetails, ShipmentListResponse, ShipmentRow} from '../voyager-data';
 
 @Injectable({providedIn: 'root'})
 export class ShipmentService {
@@ -36,5 +36,11 @@ export class ShipmentService {
 
     public deleteNotifiedContact(id: number): Observable<void> {
         return this.http.delete<void>(`notified-contacts/${id}`);
+    }
+
+    public resolveFailureReason(id: number): Observable<FailureReason> {
+        return this.http.patch<FailureReason>(`failure-reasons/${id}/resolved-at`, {
+            resolved_at: new Date().toISOString(),
+        });
     }
 }

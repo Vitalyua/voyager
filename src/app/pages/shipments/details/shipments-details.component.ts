@@ -347,6 +347,21 @@ export class ShipmentsDetailsComponent {
         }
     }
 
+    public resolveFailure(id: number): void {
+        this.api.resolveFailureReason(id)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(updated => {
+                const cur = this.awbInfo();
+                if (!cur) return;
+                this.awbInfo.set({
+                    ...cur,
+                    failure_reasons: cur.failure_reasons.map(f =>
+                        f.id === id ? {...f, ...updated} : f,
+                    ),
+                });
+            });
+    }
+
     public deleteContact(id: number): void {
         if (this.saving()) return;
         this.saving.set(true);

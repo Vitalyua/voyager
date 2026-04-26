@@ -112,25 +112,36 @@
 			<div class="vg-panel-hd">
 				<h3>Exceptions</h3>
 				<div class="spacer"></div>
-				<span class="count crit">{{ d.exceptions.length }}</span>
+				<span class="count crit">{{ awb.failure_reasons.length }}</span>
 			</div>
 			<div class="vg-panel-body">
-				@for (e of d.exceptions; track $index) {
-					<div class="vg-card crit">
+				@for (e of awb.failure_reasons; track $index) {
+					<div class="vg-card" [class.crit]="!e.resolved_at" [class.ok]="!!e.resolved_at">
 						<div class="hdr">
-							<span class="exc-reason">{{ e.reason }}</span>
+							<span class="exc-reason">{{ e.code }}</span>
 							<span class="spacer"></span>
-							<span class="mono muted exc-when">{{ e.when }}</span>
+							<span class="mono muted exc-when">
+								{{e.created_at|date:'dd MMM yyyy HH:mm'}}
+							</span>
+							@if (e.resolved_at) {
+								<span class="mono exc-when exc-resolved">
+									✓ {{e.resolved_at|date:'dd MMM yyyy HH:mm'}}
+								</span>
+							}
 						</div>
 						<div class="row exc-body">
-							@if (e.photo) {
-								<div class="vg-placeholder exc-photo">photo</div>
+							@if (e.attachments) {
+								@for (attachment of e.attachments; track $index) {
+									<div class="vg-placeholder exc-photo" [style.background]="'url('+attachment.url+')'">photo</div>
+								}
 							}
 							<div class="muted exc-comment">{{ e.comment }}</div>
 						</div>
 						<div class="foot">
-							<span class="mono exc-who">by {{ e.who }}</span>
-							<button class="vg-btn sm">Resolve</button>
+							<span class="mono exc-who">by Ground Handler Staff</span>
+							@if (!e.resolved_at) {
+								<button class="vg-btn sm" (click)="resolveFailure(e.id)">Resolve</button>
+							}
 						</div>
 					</div>
 				}
@@ -151,18 +162,24 @@
 				@for (p of awb.notified_contacts; track p.id) {
 					@if (editingId() === p.id) {
 						<div class="vg-card party-card party-edit">
-							<input class="vg-input party-edit-name" [(ngModel)]="draft.name" placeholder="Name" autofocus>
+							<input class="vg-input party-edit-name" [(ngModel)]="draft.name" placeholder="Name"
+							       autofocus>
 							<input class="vg-input party-edit-field" [(ngModel)]="draft.role" placeholder="Role">
-							<input class="vg-input party-edit-field" [(ngModel)]="draft.email" type="email" placeholder="Email">
-							<input class="vg-input party-edit-field" [(ngModel)]="draft.phone" type="tel" placeholder="Phone">
+							<input class="vg-input party-edit-field" [(ngModel)]="draft.email" type="email"
+							       placeholder="Email">
+							<input class="vg-input party-edit-field" [(ngModel)]="draft.phone" type="tel"
+							       placeholder="Phone">
 							<div class="row party-edit-foot">
 								<button class="vg-btn sm party-del" type="button"
-								        (click)="deleteContact(p.id)" [disabled]="saving()" title="Delete">🗑</button>
+								        (click)="deleteContact(p.id)" [disabled]="saving()" title="Delete">🗑
+								</button>
 								<span class="spacer"></span>
 								<button class="vg-btn sm party-icon-btn" type="button"
-								        (click)="saveEdit()" [disabled]="!draft.name.trim() || saving()" title="Save">✓</button>
+								        (click)="saveEdit()" [disabled]="!draft.name.trim() || saving()" title="Save">✓
+								</button>
 								<button class="vg-btn sm party-icon-btn" type="button"
-								        (click)="cancelEdit()" [disabled]="saving()" title="Cancel">✕</button>
+								        (click)="cancelEdit()" [disabled]="saving()" title="Cancel">✕
+								</button>
 							</div>
 						</div>
 					} @else {
@@ -187,14 +204,18 @@
 					<div class="vg-card party-card party-edit">
 						<input class="vg-input party-edit-name" [(ngModel)]="draft.name" placeholder="Name" autofocus>
 						<input class="vg-input party-edit-field" [(ngModel)]="draft.role" placeholder="Role">
-						<input class="vg-input party-edit-field" [(ngModel)]="draft.email" type="email" placeholder="Email">
-						<input class="vg-input party-edit-field" [(ngModel)]="draft.phone" type="tel" placeholder="Phone">
+						<input class="vg-input party-edit-field" [(ngModel)]="draft.email" type="email"
+						       placeholder="Email">
+						<input class="vg-input party-edit-field" [(ngModel)]="draft.phone" type="tel"
+						       placeholder="Phone">
 						<div class="row party-edit-foot">
 							<span class="spacer"></span>
 							<button class="vg-btn sm party-icon-btn" type="button"
-							        (click)="saveEdit()" [disabled]="!draft.name.trim() || saving()" title="Save">✓</button>
+							        (click)="saveEdit()" [disabled]="!draft.name.trim() || saving()" title="Save">✓
+							</button>
 							<button class="vg-btn sm party-icon-btn" type="button"
-							        (click)="cancelEdit()" [disabled]="saving()" title="Cancel">✕</button>
+							        (click)="cancelEdit()" [disabled]="saving()" title="Cancel">✕
+							</button>
 						</div>
 					</div>
 				}

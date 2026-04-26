@@ -192,6 +192,24 @@ export interface ShipmentDetails {
     awb_events: AwbEvent[];
     last_event: LogisticsEvent;
     notified_contacts: NotifyContacts[];
+    failure_reasons: FailureReason[];
+}
+
+export interface FailureReason {
+    id: number;
+    code: string;
+    comment: string;
+    resolved_at: string | null;
+    attachments: FailureReasonAttachment[];
+    created_at: string;
+}
+
+export interface FailureReasonAttachment {
+    id: number;
+    name: string;
+    mime: string;
+    created_at: string;
+    url: string;
 }
 
 export interface NotifyContacts{

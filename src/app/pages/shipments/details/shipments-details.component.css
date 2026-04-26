@@ -213,6 +213,12 @@
     font-size: 11px;
 }
 
+.exc-resolved {
+    color: var(--ok);
+    font-weight: 600;
+    margin-left: 8px;
+}
+
 .exc-body {
     gap: 10px;
     align-items: flex-start;
@@ -223,6 +229,8 @@
     height: 62px;
     flex-shrink: 0;
     font-size: 9px;
+    background-size: 100% !important;
+    object-fit: contain;
 }
 
 .exc-comment {
