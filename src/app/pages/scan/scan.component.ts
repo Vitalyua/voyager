@@ -153,7 +153,7 @@ export class ScanComponent {
     }
 
     public performPhysicalCheck(): void {
-        // TODO: wire up physical acceptance check (sensor/scan/checklist).
+        this.api.confirmRcs(this.awb()).subscribe();
         this.step.set('choose');
     }
 

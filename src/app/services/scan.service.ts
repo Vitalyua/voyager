@@ -60,6 +60,10 @@ export class ScanService {
         return this.http.post<ScanResult>(`scan/${encodeURIComponent(awb)}/foh`, {});
     }
 
+    public confirmRcs(awb: string): Observable<ScanResult> {
+        return this.http.post<ScanResult>(`scan/${encodeURIComponent(awb)}/rcs`, {});
+    }
+
     public submitAcceptance(payload: ScanAcceptancePayload): Observable<ScanResult> {
         return this.http.post<ScanResult>(`scan/${encodeURIComponent(payload.awb)}/accept`, payload);
     }
