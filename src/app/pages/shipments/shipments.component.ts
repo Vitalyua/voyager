@@ -25,7 +25,7 @@ import {CargoLabelPipe} from '../../pipes/cargo.pipe';
         DatePipe,
         StatusCodePipe,
         StatusLabelPipe,
-        CargoLabelPipe,
+        CargoLabelPipe
     ]
 })
 export class ShipmentsComponent implements OnInit {
@@ -51,8 +51,7 @@ export class ShipmentsComponent implements OnInit {
             rows = rows.filter(
                 r =>
                     (r.waybill_prefix + '-' + r.waybill_number).toLowerCase().includes(q) ||
-                    r.flight.legs.map(leg => leg.from).join(' ').toLowerCase().includes(q)/* ||
-                    this.cargoLabel(r.cargo).toLowerCase().includes(q)*/,
+                    r.flight.legs.map(leg => leg.from).join(' ').toLowerCase().includes(q),
             );
         }
         return rows;
@@ -72,10 +71,9 @@ export class ShipmentsComponent implements OnInit {
         this.loading.set(true);
         this.api.list()
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({
-                next: rows => this.allRows.set(rows.items),
-                complete: () => this.loading.set(false),
-                error: () => this.loading.set(false),
+            .subscribe((rows) => {
+                this.allRows.set(rows.items);
+                this.loading.set(false);
             });
     }
 

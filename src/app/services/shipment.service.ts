@@ -9,7 +9,9 @@ export class ShipmentService {
 
     public list(): Observable<ShipmentListResponse> {
         return this.http.get<ShipmentListResponse>('notifications/shipments').pipe(map((response) => {
-            response.items.map((item) => {
+            response.items.filter((item)=>{
+                return item.departureLocation && item.arrivalLocation && item.last_event && item.last_event.eventCode;
+            }).map((item) => {
                 item.departureLocation.map((dep) => dep.code = dep["@id"].substring(dep["@id"].length - 3));
                 item.arrivalLocation.map((arr) => arr.code = arr["@id"].substring(arr["@id"].length - 3));
                 item.last_event.eventCode.code = item.last_event.eventCode["@id"].substring(item.last_event.eventCode["@id"].length - 3);
