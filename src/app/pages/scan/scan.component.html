@@ -23,8 +23,35 @@
             }
         </header>
 
+        <!-- ── Loading skeleton ── -->
+        @if (loading()) {
+            <div class="scan-body">
+                <div class="skel-card">
+                    <div class="skel-route">
+                        <div class="skel skel-code"></div>
+                        <div class="skel skel-line"></div>
+                        <div class="skel skel-code"></div>
+                        <div class="skel skel-line"></div>
+                        <div class="skel skel-code"></div>
+                    </div>
+                    <div class="skel skel-divider"></div>
+                    <div class="skel-meta">
+                        <div class="skel skel-pill"></div>
+                        <div class="skel skel-tag"></div>
+                        <div class="skel skel-tag"></div>
+                    </div>
+                    <div class="skel skel-badge"></div>
+                </div>
+                <div class="skel skel-hint"></div>
+            </div>
+            <footer class="scan-foot stack">
+                <div class="skel skel-btn lg"></div>
+                <div class="skel skel-btn lg"></div>
+            </footer>
+        }
+
         <!-- ── Step 1: Confirm FOH ── -->
-        @if (step() === 'foh') {
+        @if (!loading() && step() === 'foh') {
             <div class="scan-body">
                 <div class="awb-card">
                     <div class="awb-route">
@@ -35,7 +62,9 @@
                             @if (!last) {
                                 <div class="route-leg">
                                     <span class="route-line"></span>
-                                    <span class="route-arrow">›</span>
+                                    <svg class="route-arrow" width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1.5 1.5L6.5 6L1.5 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
                                 </div>
                             }
                         }
@@ -77,7 +106,7 @@
         }
 
         <!-- ── Step 2: Accept / Failure ── -->
-        @if (step() === 'choose') {
+        @if (!loading() && step() === 'choose') {
             <div class="scan-body">
                 <div class="awb-card">
                     <div class="awb-route">
@@ -88,7 +117,9 @@
                             @if (!last) {
                                 <div class="route-leg">
                                     <span class="route-line"></span>
-                                    <span class="route-arrow">›</span>
+                                    <svg class="route-arrow" width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1.5 1.5L6.5 6L1.5 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
                                 </div>
                             }
                         }
@@ -144,7 +175,7 @@
         }
 
         <!-- ── Step 3: Failure form ── -->
-        @if (step() === 'failure') {
+        @if (!loading() && step() === 'failure') {
             <div class="scan-body">
                 <!-- Reasons -->
                 <div class="section">
@@ -293,14 +324,14 @@
                                             <div class="contact-name">{{ p.name }}</div>
                                             <div class="contact-role">{{ p.role }}</div>
                                         </div>
-                                        @if (contacts()[i]?.on) {
+                                        <!--@if (contacts()[i]?.on) {
                                             <awr-toggle-group
                                                     [options]="channels"
                                                     [ngModel]="contacts()[i]?.ch ?? 'Email'"
                                                     [ngModelOptions]="{standalone: true}"
                                                     (ngModelChange)="setContactChannel(i, $event)">
                                             </awr-toggle-group>
-                                        }
+                                        }-->
                                     </div>
                                 }
                                 @if (parties().length === 0) {
@@ -323,7 +354,7 @@
         }
 
         <!-- ── Final: Confirmation ── -->
-        @if (step() === 'doneFail' || step() === 'doneOk') {
+        @if (!loading() && (step() === 'doneFail' || step() === 'doneOk')) {
             <div class="scan-body done">
                 <div class="done-icon">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none"

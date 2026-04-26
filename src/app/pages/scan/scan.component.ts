@@ -62,6 +62,7 @@ export class ScanComponent {
     );
 
     public readonly awbInfo = signal<ScanAwbInfo | null>(null);
+    public readonly loading = signal<boolean>(true);
 
     public readonly step = signal<Step>('foh');
     public readonly fohConfirmedAt = signal<string | null>(null);
@@ -80,6 +81,7 @@ export class ScanComponent {
                     this.contacts.set(
                         (info?.parties ?? []).map(() => ({on: true, ch: 'Email' as const})),
                     );
+                    this.loading.set(false);
                 });
         });
     }

@@ -87,7 +87,7 @@
 }
 .awb-route {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
 }
 .route-stop { display: flex; flex-direction: column; gap: 2px; align-items: center; }
@@ -99,7 +99,6 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    margin-top: 10px;
     min-width: 24px;
 }
 .route-line {
@@ -109,9 +108,8 @@
 }
 .route-arrow {
     color: var(--sc-fnt);
-    font-size: 14px;
-    line-height: 1;
-    font-weight: 600;
+    display: block;
+    flex-shrink: 0;
 }
 
 .awb-div { border: 0; height: 1px; background: var(--sc-border); }
@@ -481,6 +479,59 @@
     color: var(--sc-ink);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
+
+/* ── skeleton loader ── */
+@keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+}
+
+.skel {
+    border-radius: 6px;
+    background: linear-gradient(90deg,
+        var(--sc-border) 25%,
+        #e2e8f0 50%,
+        var(--sc-border) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skel-card {
+    background: var(--sc-surface);
+    border-radius: 8px;
+    border: 1px solid var(--sc-border);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skel-route {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.skel-code  { width: 44px; height: 22px; border-radius: 4px; }
+.skel-line  { flex: 1; height: 1px; border-radius: 0; }
+.skel-divider { height: 1px; border-radius: 0; }
+
+.skel-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.skel-pill { width: 80px; height: 16px; border-radius: 999px; }
+.skel-tag  { width: 48px; height: 14px; }
+.skel-badge { width: 110px; height: 20px; border-radius: 3px; }
+.skel-hint  { height: 14px; width: 70%; border-radius: 4px; }
+
+.skel-btn {
+    border-radius: 8px;
+    height: 56px;
+}
+.skel-btn.lg { height: 64px; }
 
 /* ── done screen ── */
 .scan-body.done {
