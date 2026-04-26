@@ -1,0 +1,86 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px 28px;
+    gap: var(--space-4);
+    min-height: 0;
+}
+
+/* ── KPI tiles row ── */
+.db-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+}
+
+/* ── 3 column area ── */
+.db-cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    flex: 1;
+    min-height: 0;
+}
+
+.db-cols .vg-panel {
+    height: 100%;
+    overflow: hidden;
+}
+
+.db-sub {
+    font-size: 11px;
+    margin-left: auto;
+    letter-spacing: 0.02em;
+}
+
+.vg-panel-hd {
+    gap: var(--space-2);
+}
+
+.vg-panel-body {
+    padding: 10px;
+    gap: 8px;
+}
+
+.vg-card {
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.vg-card:hover {
+    background: var(--bg-hover);
+}
+
+.db-empty {
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+    font-size: 12px;
+}
+
+.db-code {
+    font-weight: 600;
+    color: var(--text-pri);
+    letter-spacing: 0.04em;
+}
+
+.db-resolved {
+    color: var(--ok);
+    font-size: 11px;
+}
+
+.vg-card .uld {
+    font-size: 12px;
+    color: var(--text-pri);
+    font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+    .db-tiles {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .db-cols {
+        grid-template-columns: 1fr;
+    }
+}

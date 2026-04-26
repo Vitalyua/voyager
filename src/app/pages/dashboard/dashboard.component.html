@@ -1,0 +1,135 @@
+<!-- ── KPI tiles ── -->
+<div class="db-tiles">
+    <div class="vg-tile">
+        <span class="label">Total AWB today</span>
+        <span class="value">{{ stats()?.total_awb ?? '—' }}</span>
+        <span class="trend flat">&nbsp;</span>
+    </div>
+
+    <div class="vg-tile">
+        <span class="label">On time %</span>
+        <span class="value">{{ onTimePct() }}</span>
+        <span class="trend flat">
+            @if (stats()) {
+                {{ stats()!.on_time_awb }} / {{ stats()!.total_awb }} on time
+            }
+        </span>
+    </div>
+
+    <div class="vg-tile">
+        <span class="label">Open exceptions</span>
+        <span class="value">{{ stats()?.open_failure_reasons ?? '—' }}</span>
+        <span class="trend flat">&nbsp;</span>
+    </div>
+
+    <div class="vg-tile">
+        <span class="label">Last CHAMP msg</span>
+        <span class="value">{{ timeAgo(stats()?.last_notification_at ?? null) }}</span>
+        <span class="trend flat mono">
+            {{ stats()?.last_notification_at || '—' }}
+        </span>
+    </div>
+</div>
+
+<!-- ── 3 columns ── -->
+<div class="db-cols">
+
+    <!-- column 1: distressed AWB -->
+    <div class="vg-panel">
+        <div class="vg-panel-hd">
+            <h3>Distressed cargo</h3>
+            <span class="count crit">{{ lateAwbs().length }}</span>
+            <span class="muted db-sub">Late / at-risk AWB</span>
+        </div>
+        <div class="vg-panel-body">
+            @if (loading()) {
+                <div class="db-empty muted">Loading…</div>
+            } @else if (lateAwbs().length === 0) {
+                <div class="db-empty muted">No distressed AWBs.</div>
+            } @else {
+                @for (a of lateAwbs(); track a.id) {
+                    <div class="vg-card crit" (click)="openAwb(a.waybill_prefix, a.waybill_number)">
+                        <div class="hdr">
+                            <span class="awb">{{ a.waybill_prefix }}-{{ a.waybill_number }}</span>
+                            <span class="spacer"></span>
+                            <span class="vg-badge crit">DISTRESSED</span>
+                        </div>
+                        <div class="meta mono">{{ a.created | date:'dd MMM yyyy HH:mm' }}</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- column 2: exceptions -->
+    <div class="vg-panel">
+        <div class="vg-panel-hd">
+            <h3>Exceptions</h3>
+            <span class="count crit">{{ failureReasons().length }}</span>
+            <span class="muted db-sub">Failure reasons feed</span>
+        </div>
+        <div class="vg-panel-body">
+            @if (loading()) {
+                <div class="db-empty muted">Loading…</div>
+            } @else if (failureReasons().length === 0) {
+                <div class="db-empty muted">No exceptions.</div>
+            } @else {
+                @for (e of failureReasons(); track e.id) {
+                    <div class="vg-card" [class.crit]="!e.resolved_at" [class.ok]="!!e.resolved_at"
+                         (click)="openAwb(e.waybill_prefix, e.waybill_number)">
+                        <div class="hdr">
+                            <span class="awb">{{ e.waybill_prefix }}-{{ e.waybill_number }}</span>
+                            <span class="spacer"></span>
+                            <span class="vg-badge" [class.crit]="!e.resolved_at" [class.ok]="!!e.resolved_at">
+                                {{ e.resolved_at ? 'RESOLVED' : 'OPEN' }}
+                            </span>
+                        </div>
+                        <div class="reason">
+                            <span class="mono db-code">{{ e.code }}</span>
+                            @if (e.comment) {
+                                <span class="muted">— {{ e.comment }}</span>
+                            }
+                        </div>
+                        <div class="foot">
+                            <span class="mono muted">{{ e.created_at | date:'dd MMM yyyy HH:mm' }}</span>
+                            @if (e.resolved_at) {
+                                <span class="mono db-resolved">✓ {{ e.resolved_at | date:'dd MMM HH:mm' }}</span>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- column 3: ULDs -->
+    <div class="vg-panel">
+        <div class="vg-panel-hd">
+            <h3>ULDs</h3>
+            <span class="count">{{ awbsWithUld().length }}</span>
+            <span class="muted db-sub">AWB · ULD pallets</span>
+        </div>
+        <div class="vg-panel-body">
+            @if (loading()) {
+                <div class="db-empty muted">Loading…</div>
+            } @else if (awbsWithUld().length === 0) {
+                <div class="db-empty muted">No ULDs.</div>
+            } @else {
+                @for (u of awbsWithUld(); track u.id) {
+                    <div class="vg-card info" (click)="openAwb(u.waybill_prefix, u.waybill_number)">
+                        <div class="hdr">
+                            <span class="awb">{{ u.waybill_prefix }}-{{ u.waybill_number }}</span>
+                            <span class="spacer"></span>
+                            <span class="mono uld">{{ u.uld.number }}</span>
+                        </div>
+                        <div class="meta">
+                            <span class="mono muted">{{ u.uld.type }}</span>
+                            <span class="faint">·</span>
+                            <span class="mono muted">{{ u.created | date:'dd MMM yyyy HH:mm' }}</span>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
