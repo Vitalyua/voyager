@@ -9,6 +9,7 @@ export interface ScanAwbParty {
 
 export interface ScanAwbInfo {
     awb: string;
+    notification_id: number | null;
     route: string[];
     cargo: string | null;
     pcs: number;
@@ -31,6 +32,7 @@ export interface ScanFailureContact {
 
 export interface ScanFailurePayload {
     awb: string;
+    notification_id: number | null;
     reasons: ScanFailureReason[];
     notify: boolean;
     contacts: ScanFailureContact[];
@@ -66,6 +68,7 @@ export class ScanService {
         const reasonsForJson = payload.reasons.map(({code, comment}) => ({code, comment}));
         const json = {
             awb: payload.awb,
+            notification_id: payload.notification_id,
             reasons: reasonsForJson,
             notify: payload.notify,
             contacts: payload.contacts,

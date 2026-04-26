@@ -62,6 +62,7 @@ export class ScanComponent {
     );
 
     public readonly awbInfo = signal<ScanAwbInfo | null>(null);
+    public readonly notificationId = signal<number | null>(null);
     public readonly loading = signal<boolean>(true);
 
     public readonly step = signal<Step>('foh');
@@ -75,6 +76,7 @@ export class ScanComponent {
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe(info => {
                     this.awbInfo.set(info);
+                    this.notificationId.set(info?.notification_id ?? null);
                     if (info?.fohConfirmedAt) {
                         this.fohConfirmedAt.set(info.fohConfirmedAt);
                     }
@@ -179,6 +181,7 @@ export class ScanComponent {
         const contacts = this.contacts();
         const payload = {
             awb: this.awb(),
+            notification_id: this.notificationId(),
             reasons: this.reasons()
                 .filter(r => r.l1 && r.l2 && r.l3)
                 .map(r => ({
