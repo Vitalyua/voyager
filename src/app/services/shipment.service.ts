@@ -1,7 +1,7 @@
 import {Injectable, inject} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, map} from 'rxjs';
-import {ShipmentListResponse, ShipmentRow} from '../voyager-data';
+import {NotifiedContactPayload, NotifyContacts, ShipmentDetails, ShipmentListResponse, ShipmentRow} from '../voyager-data';
 
 @Injectable({providedIn: 'root'})
 export class ShipmentService {
@@ -17,5 +17,24 @@ export class ShipmentService {
             });
             return response;
         }));
+    }
+
+    public getAwb(prefix: string, awb: string): Observable<ShipmentDetails> {
+        const params = new HttpParams()
+            .set('awb_prefix', prefix)
+            .set('awb_number', awb);
+        return this.http.get<ShipmentDetails>('/notifications/shipments/detail', {params});
+    }
+
+    public createNotifiedContact(payload: NotifiedContactPayload): Observable<NotifyContacts> {
+        return this.http.post<NotifyContacts>('notified-contacts', payload);
+    }
+
+    public updateNotifiedContact(id: number, payload: Partial<NotifiedContactPayload>): Observable<NotifyContacts> {
+        return this.http.patch<NotifyContacts>(`notified-contacts/${id}`, payload);
+    }
+
+    public deleteNotifiedContact(id: number): Observable<void> {
+        return this.http.delete<void>(`notified-contacts/${id}`);
     }
 }

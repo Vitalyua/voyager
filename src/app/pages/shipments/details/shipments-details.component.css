@@ -184,8 +184,8 @@
     font-size: 12.5px;
 }
 
-.tl-warn {
-    color: var(--warn);
+.tl-succ {
+    color: var(--ok);
     font-weight: 600;
 }
 
@@ -240,10 +240,59 @@
 .party-card {
     padding: 8px 10px;
     border-left-color: var(--border-str);
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
 }
 
 .party-card.party-sel {
     border-left-color: var(--accent);
+}
+
+.party-ch {
+    margin-left: 4px;
+    color: var(--text-fnt);
+}
+
+.party-edit {
+    cursor: default;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 10px;
+}
+
+.party-edit-name {
+    font-weight: 500;
+}
+
+.party-edit-field {
+    font-size: 11.5px;
+}
+
+.party-edit-foot {
+    gap: 6px;
+    margin-top: 2px;
+    align-items: center;
+}
+
+.party-icon-btn,
+.party-del {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.party-del {
+    color: var(--crit);
+}
+
+.party-del:hover {
+    background: rgba(var(--crit-rgb), 0.12);
+    border-color: rgba(var(--crit-rgb), 0.4);
 }
 
 .party-avatar {

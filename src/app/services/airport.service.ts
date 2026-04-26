@@ -18,18 +18,14 @@ export class AirportService {
         }
         return map;
     });
+    public readonly iatas = computed(() => {
+        const map = new Map<string, AirportRecord>();
+        for (const a of this._airports()) {
+            if (a.iata) map.set(a.iata, a);
+        }
+        return map;
+    })
 
-    public readonly dropdownOptions = computed(() =>
-        this._airports()
-            .filter(a => a.iata)
-            .map(a => ({
-                value: a.iata,
-                label: `${a.iata} — ${a.name}, ${a.city}`,
-                icon: a.countryCode ? `awr-flag awr-flag-${a.countryCode}` : '',
-                active: false,
-                disabled: false,
-            }))
-    );
 
     constructor(private readonly http: HttpClient) {
     }
@@ -66,17 +62,7 @@ export class AirportService {
         return a ? `${a.iata} — ${a.name}` : iata;
     }
 
-    public distance(from: string, to: string): number | null {
-        const a = this.get(from);
-        const b = this.get(to);
-        if (!a || !b) return null;
-        const R = 6371;
-        const dLat = (b.lat - a.lat) * Math.PI / 180;
-        const dLng = (b.lng - a.lng) * Math.PI / 180;
-        const sinLat = Math.sin(dLat / 2);
-        const sinLng = Math.sin(dLng / 2);
-        const h = sinLat * sinLat +
-            Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * sinLng * sinLng;
-        return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+    public getCity(iata: string){
+        return this.iatas().get(iata)?.city ?? '';
     }
 }
