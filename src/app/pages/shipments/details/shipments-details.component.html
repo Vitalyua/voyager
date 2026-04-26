@@ -132,7 +132,7 @@
 						<div class="row exc-body">
 							@if (e.attachments) {
 								@for (attachment of e.attachments; track $index) {
-									<div class="vg-placeholder exc-photo" [style.background]="'url('+attachment.url+')'">photo</div>
+									<a [href]="attachment.url" target="_blank" class="vg-placeholder exc-photo" [style.background]="'url('+attachment.url+')'">photo</a>
 								}
 							}
 							<div class="muted exc-comment">{{ e.comment }}</div>
