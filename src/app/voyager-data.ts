@@ -247,3 +247,35 @@ export interface AwbEvent {
     is_late: boolean;
     delta: string | null;
 }
+
+export interface StatisticsSummary {
+    total_awb: number;
+    on_time_awb: number;
+    open_failure_reasons: number;
+    last_notification_at: string | null;
+}
+
+export interface LateAwb {
+    id: number;
+    waybill_prefix: string;
+    waybill_number: string;
+    created: string;
+}
+
+export interface FailureReasonSummary {
+    id: number;
+    code: string;
+    comment: string;
+    resolved_at: string | null;
+    created_at: string;
+    waybill_prefix: string;
+    waybill_number: string;
+}
+
+export interface AwbWithUld {
+    id: number;
+    waybill_prefix: string;
+    waybill_number: string;
+    uld: Uld;
+    created: string;
+}

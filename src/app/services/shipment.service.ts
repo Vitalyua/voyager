@@ -1,7 +1,7 @@
 import {Injectable, inject} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, map} from 'rxjs';
-import {FailureReason, NotifiedContactPayload, NotifyContacts, ShipmentDetails, ShipmentListResponse, ShipmentRow} from '../voyager-data';
+import {AwbWithUld, FailureReason, FailureReasonSummary, LateAwb, NotifiedContactPayload, NotifyContacts, ShipmentDetails, ShipmentListResponse, StatisticsSummary} from '../voyager-data';
 
 @Injectable({providedIn: 'root'})
 export class ShipmentService {
@@ -44,5 +44,21 @@ export class ShipmentService {
         return this.http.patch<FailureReason>(`failure-reasons/${id}/resolved-at`, {
             resolved_at: new Date().toISOString(),
         });
+    }
+
+    public getStatistics(): Observable<StatisticsSummary> {
+        return this.http.get<StatisticsSummary>('statistics');
+    }
+
+    public getLateAwb(): Observable<LateAwb[]> {
+        return this.http.get<LateAwb[]>('statistics/late-awb');
+    }
+
+    public getFailureReasonsFeed(): Observable<FailureReasonSummary[]> {
+        return this.http.get<FailureReasonSummary[]>('statistics/failure-reasons');
+    }
+
+    public getAwbWithUld(): Observable<AwbWithUld[]> {
+        return this.http.get<AwbWithUld[]>('statistics/awbwithuld');
     }
 }
