@@ -139,6 +139,13 @@ export class ScanComponent {
         return [r.l1, r.l2, r.l3].filter(Boolean).join('');
     }
 
+    public ehcpText(r: Reason): string {
+        const l1Label = this.reasonsL1.find(o => o.value === r.l1)?.label ?? '';
+        const l2Label = this.l2Options(r.l1).find(o => o.value === r.l2)?.label ?? '';
+        const l3Label = this.l3Options(r.l1, r.l2).find(o => o.value === r.l3)?.label ?? '';
+        return [l1Label, l2Label, l3Label].filter(Boolean).join(' / ');
+    }
+
     private toDropdown(opts: EhcpOption[]): DropdownOption[] {
         return opts.map(o => ({value: o.value, label: `${o.value} — ${o.label}`}));
     }
@@ -186,6 +193,7 @@ export class ScanComponent {
                 .filter(r => r.l1 && r.l2 && r.l3)
                 .map(r => ({
                     code: this.ehcpCode(r),
+                    text: this.ehcpText(r),
                     comment: r.comment,
                     files: r.files,
                 })),
