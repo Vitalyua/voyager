@@ -146,6 +146,10 @@ export class ScanComponent {
         return [l1Label, l2Label, l3Label].filter(Boolean).join(' / ');
     }
 
+    public ehcpDis(r: Reason): string {
+        return this.l3Options(r.l1, r.l2).find(o => o.value === r.l3)?.dis ?? '';
+    }
+
     private toDropdown(opts: EhcpOption[]): DropdownOption[] {
         return opts.map(o => ({value: o.value, label: `${o.value} — ${o.label}`}));
     }
@@ -189,6 +193,7 @@ export class ScanComponent {
                 .map(r => ({
                     code: this.ehcpCode(r),
                     text: this.ehcpText(r),
+                    description: this.ehcpDis(r),
                     comment: r.comment,
                     files: r.files,
                 })),

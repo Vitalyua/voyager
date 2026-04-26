@@ -20,6 +20,8 @@ export interface ScanAwbInfo {
 
 export interface ScanFailureReason {
     code: string;
+    text?: string;
+    description?: string;
     comment: string;
     files?: File[];
 }
@@ -69,7 +71,7 @@ export class ScanService {
     }
 
     public submitFailure(payload: ScanFailurePayload): Observable<ScanResult> {
-        const reasonsForJson = payload.reasons.map(({code, comment}) => ({code, comment}));
+        const reasonsForJson = payload.reasons.map(({code, text, description, comment}) => ({code, text, description, comment}));
         const json = {
             awb: payload.awb,
             notification_id: payload.notification_id,
