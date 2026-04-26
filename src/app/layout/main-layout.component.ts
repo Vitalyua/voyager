@@ -16,7 +16,6 @@ export class MainLayoutComponent implements OnInit {
     public readonly navLinks = [
         {label: 'Dashboard', path: '/dashboard'},
         {label: 'Shipments', path: '/shipments'},
-        {label: 'Claims', path: '/claims'},
     ];
 
     public readonly clock = signal(this.formatUtc());

@@ -193,6 +193,12 @@ export interface ShipmentDetails {
     last_event: LogisticsEvent;
     notified_contacts: NotifyContacts[];
     failure_reasons: FailureReason[];
+    uld?: Uld;
+}
+
+export interface Uld {
+    type: string;
+    number: string;
 }
 
 export interface FailureReason {

@@ -3,10 +3,10 @@ import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import QRCode from 'qrcode';
-import {AWB_DETAIL, IATA, CARGO, ShipmentRow, ShipmentDetails, NotifyContacts} from '../../../voyager-data';
+import {ShipmentDetails, NotifyContacts} from '../../../voyager-data';
 import {TemperatureChartComponent} from '../../../shared/temperature-chart/temperature-chart.component';
 import {CONTAINER_PRESETS} from '../../../shared/temperature-chart/container-presets';
-import {RealRouteInput} from '../../../shared/temperature-chart/temperature-chart.types';
+import {ContainerSpec, RealRouteInput} from '../../../shared/temperature-chart/temperature-chart.types';
 import {buildRealRouteInput, deriveWeatherWindows} from '../../../shared/temperature-chart/route-input-builder';
 import {takeUntilDestroyed, toObservable, toSignal} from "@angular/core/rxjs-interop";
 import {filter, map, switchMap, take} from "rxjs";
@@ -57,8 +57,11 @@ export class ShipmentsDetailsComponent {
         take(1),
     );
 
-    public readonly d = AWB_DETAIL;
     public readonly realRoute = signal<RealRouteInput | null>(null);
+    public readonly container = computed<ContainerSpec | null>(() => {
+        const type = this.awbInfo()?.uld?.type;
+        return type ? CONTAINER_PRESETS[type] ?? null : null;
+    });
     public readonly routeCities = computed(() => {
         if (!this.awbInfo() || !this.airportsService.iatas().size) return '';
         return [this.airportsService.getCity(this.awbInfo()!.flight!.legs[0].from), ...this.awbInfo()!.flight!.legs.map(c => this.airportsService.getCity(c.to) ?? c)].join(' → ')
@@ -162,10 +165,11 @@ export class ShipmentsDetailsComponent {
                     this.realRoute.set(null);
                     return;
                 }
+                const container = (info.uld?.type && CONTAINER_PRESETS[info.uld.type]) || CONTAINER_PRESETS['vaQMed21Premium'];
                 this.realRoute.set(buildRealRouteInput({
                     legs,
                     weather,
-                    container: CONTAINER_PRESETS['vaQMed21Premium'],
+                    container,
                 }));
             },
             error: err => {
@@ -197,7 +201,7 @@ export class ShipmentsDetailsComponent {
         if (!this.qrSvgRaw) return;
         const win = window.open('', '_blank', 'width=420,height=560');
         if (!win) return;
-        const awb = this.d.awb.replace(/[<>&]/g, '');
+        const awb = (this.awbInfo()?.waybill_prefix + '-' + this.awbInfo()?.waybill_number).replace(/[<>&]/g, '');
         win.document.open();
         win.document.write(`<!doctype html><html><head>
             <meta charset="utf-8">

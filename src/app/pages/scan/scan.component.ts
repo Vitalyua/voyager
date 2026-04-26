@@ -45,7 +45,7 @@ interface DropdownOption {
 @Component({
     selector: 'app-scan',
     standalone: true,
-    imports: [FormsModule, AwrDropdownComponent, AwrCheckboxComponent, AwrSwitchComponent, AwrToggleGroupComponent],
+    imports: [FormsModule, AwrDropdownComponent, AwrCheckboxComponent, AwrSwitchComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './scan.component.html',
     styleUrl: './scan.component.css',
